@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Orizon - Analog Clock</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="clock-container">
+        <div class="date-display">
+          <div class="date-text">Loading...</div>
+          <div class="day-text">Today is...</div>
+        </div>
+
+        <div class="clock">
+          <div class="clock-face">
+            <div class="hour-markers">
+              <div class="marker hour-12"><span>12</span></div>
+              <div class="marker hour-1"><span>1</span></div>
+              <div class="marker hour-2"><span>2</span></div>
+              <div class="marker hour-3"><span>3</span></div>
+              <div class="marker hour-4"><span>4</span></div>
+              <div class="marker hour-5"><span>5</span></div>
+              <div class="marker hour-6"><span>6</span></div>
+              <div class="marker hour-7"><span>7</span></div>
+              <div class="marker hour-8"><span>8</span></div>
+              <div class="marker hour-9"><span>9</span></div>
+              <div class="marker hour-10"><span>10</span></div>
+              <div class="marker hour-11"><span>11</span></div>
+            </div>
+
+            <div class="hands">
+              <div class="hand hour-hand" id="hourHand"></div>
+              <div class="hand minute-hand" id="minuteHand"></div>
+              <div class="hand second-hand" id="secondHand"></div>
+              <div class="center-dot"></div>
+            </div>
+
+            <div class="brand-logo">Orizon</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

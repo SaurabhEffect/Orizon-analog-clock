@@ -1,0 +1,252 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  position: relative;
+}
+
+.clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.date-display {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 15px 25px;
+}
+
+.date-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.day-text {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+.clock {
+  width: 320px;
+  height: 320px;
+  position: relative;
+  margin: 20px 0;
+}
+
+.clock-face {
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hour-markers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.marker {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.9);
+  transform-origin: center;
+}
+
+.marker span {
+  transform: rotate(calc(var(--rotation) * -1));
+}
+
+.hour-12 {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(0deg);
+  --rotation: 0deg;
+}
+.hour-1 {
+  top: 25px;
+  right: 65px;
+  transform: rotate(30deg);
+  --rotation: 30deg;
+}
+.hour-2 {
+  top: 65px;
+  right: 25px;
+  transform: rotate(60deg);
+  --rotation: 60deg;
+}
+.hour-3 {
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%) rotate(90deg);
+  --rotation: 90deg;
+}
+.hour-4 {
+  bottom: 65px;
+  right: 25px;
+  transform: rotate(120deg);
+  --rotation: 120deg;
+}
+.hour-5 {
+  bottom: 25px;
+  right: 65px;
+  transform: rotate(150deg);
+  --rotation: 150deg;
+}
+.hour-6 {
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(180deg);
+  --rotation: 180deg;
+}
+.hour-7 {
+  bottom: 25px;
+  left: 65px;
+  transform: rotate(210deg);
+  --rotation: 210deg;
+}
+.hour-8 {
+  bottom: 65px;
+  left: 25px;
+  transform: rotate(240deg);
+  --rotation: 240deg;
+}
+.hour-9 {
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%) rotate(270deg);
+  --rotation: 270deg;
+}
+.hour-10 {
+  top: 65px;
+  left: 25px;
+  transform: rotate(300deg);
+  --rotation: 300deg;
+}
+.hour-11 {
+  top: 25px;
+  left: 65px;
+  transform: rotate(330deg);
+  --rotation: 330deg;
+}
+
+.hands {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform-origin: bottom center;
+  border-radius: 10px;
+  transition: transform 0.5s ease;
+}
+
+.hour-hand {
+  width: 6px;
+  height: 80px;
+  background: #ffffff;
+  margin-left: -3px;
+}
+
+.minute-hand {
+  width: 4px;
+  height: 110px;
+  background: #ffffff;
+  margin-left: -2px;
+}
+
+.second-hand {
+  width: 2px;
+  height: 120px;
+  background: #ff6b6b;
+  margin-left: -1px;
+  transition: transform 0.1s ease-out;
+}
+
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  background: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.brand-logo {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+  letter-spacing: 2px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+    max-width: 100%;
+  }
+
+  .clock {
+    width: 280px;
+    height: 280px;
+  }
+}
+
+@media (max-width: 480px) {
+  .clock {
+    width: 240px;
+    height: 240px;
+  }
+
+  .marker {
+    font-size: 14px;
+  }
+}

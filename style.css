@@ -1,3 +1,23 @@
+/* Orizon v1.1 - Enhanced Glassmorphism Styling */
+
+:root {
+  --bg-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.1);
+  --bg-glass: rgba(255, 255, 255, 0.15);
+  --bg-glass-hover: rgba(255, 255, 255, 0.25);
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.8);
+  --text-accent: rgba(255, 255, 255, 0.6);
+  --accent-color: #00d4ff;
+  --accent-secondary: #ff6b6b;
+  --shadow-light: rgba(255, 255, 255, 0.2);
+  --shadow-dark: rgba(0, 0, 0, 0.2);
+  --border-glass: rgba(255, 255, 255, 0.2);
+
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -6,13 +26,49 @@
 
 body {
   font-family: "Inter", sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--bg-primary);
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: var(--text-primary);
   overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+      circle at 20% 80%,
+      rgba(120, 119, 198, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(255, 107, 107, 0.3) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(0, 212, 255, 0.2) 0%,
+      transparent 50%
+    );
+  pointer-events: none;
+  animation: backgroundFloat 10s ease-in-out infinite alternate;
+}
+
+@keyframes backgroundFloat {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  100% {
+    transform: translate(-10px, -10px) rotate(2deg);
+  }
 }
 
 .container {
@@ -20,52 +76,135 @@ body {
   max-width: 500px;
   padding: 20px;
   position: relative;
+  z-index: 1;
 }
 
 .clock-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 25px;
+  animation: containerSlideIn 1s var(--animation-bounce);
+}
+
+@keyframes containerSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .date-display {
   text-align: center;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 15px 25px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 20px 30px;
+  box-shadow: 0 8px 32px var(--shadow-dark), inset 0 1px 0 var(--shadow-light);
+  transition: all 0.3s var(--animation-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+.date-display::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.date-display:hover::before {
+  left: 100%;
+}
+
+.date-display:hover {
+  background: var(--bg-glass-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px var(--shadow-dark), inset 0 1px 0 var(--shadow-light);
 }
 
 .date-text {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .day-text {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-weight: 400;
+  letter-spacing: 0.5px;
 }
 
 .clock {
-  width: 320px;
-  height: 320px;
+  width: 340px;
+  height: 340px;
   position: relative;
   margin: 20px 0;
+  animation: clockAppear 1.2s var(--animation-bounce) 0.3s both;
+}
+
+@keyframes clockAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .clock-face {
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  background: var(--bg-glass);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 2px solid var(--border-glass);
   border-radius: 50%;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 20px 60px var(--shadow-dark),
+    inset 0 2px 4px var(--shadow-light), inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s var(--animation-smooth);
+}
+
+.clock-face::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.clock-face:hover {
+  transform: scale(1.02);
+  box-shadow: 0 25px 80px var(--shadow-dark),
+    inset 0 2px 6px var(--shadow-light), inset 0 -2px 6px rgba(0, 0, 0, 0.15);
 }
 
 .hour-markers {
@@ -78,15 +217,23 @@ body {
 
 .marker {
   position: absolute;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 600;
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.9);
+  font-weight: 700;
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.95);
   transform-origin: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s var(--animation-smooth);
+}
+
+.marker:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+  color: var(--accent-color);
 }
 
 .marker span {
@@ -179,53 +326,99 @@ body {
   left: 50%;
   bottom: 50%;
   transform-origin: bottom center;
-  border-radius: 10px;
-  transition: transform 0.5s ease;
+  border-radius: 20px;
+  transition: transform 0.6s var(--animation-smooth);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .hour-hand {
-  width: 6px;
-  height: 80px;
-  background: #ffffff;
-  margin-left: -3px;
+  width: 8px;
+  height: 90px;
+  background: linear-gradient(
+    to top,
+    var(--text-primary),
+    rgba(255, 255, 255, 0.8)
+  );
+  margin-left: -4px;
+  border-radius: 4px 4px 20px 20px;
 }
 
 .minute-hand {
-  width: 4px;
-  height: 110px;
-  background: #ffffff;
-  margin-left: -2px;
+  width: 6px;
+  height: 120px;
+  background: linear-gradient(
+    to top,
+    var(--text-primary),
+    rgba(255, 255, 255, 0.9)
+  );
+  margin-left: -3px;
+  border-radius: 3px 3px 15px 15px;
 }
 
 .second-hand {
-  width: 2px;
-  height: 120px;
-  background: #ff6b6b;
-  margin-left: -1px;
+  width: 3px;
+  height: 130px;
+  background: linear-gradient(to top, var(--accent-secondary), #ff8a8a);
+  margin-left: -1.5px;
   transition: transform 0.1s ease-out;
+  border-radius: 1.5px 1.5px 10px 10px;
+  box-shadow: 0 2px 12px rgba(255, 107, 107, 0.4);
 }
 
 .center-dot {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: 16px;
-  height: 16px;
-  background: #ffffff;
+  width: 20px;
+  height: 20px;
+  background: radial-gradient(
+    circle,
+    var(--text-primary),
+    rgba(255, 255, 255, 0.8)
+  );
+  border: 2px solid var(--accent-secondary);
   border-radius: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.5);
 }
 
 .brand-logo {
   position: absolute;
-  top: 65%;
+  top: 68%;
   left: 50%;
   transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-accent);
+  letter-spacing: 3px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.version-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: var(--accent-color);
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-size: 12px;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
-  letter-spacing: 2px;
+  box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: badgeGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes badgeGlow {
+  0% {
+    box-shadow: 0 4px 16px rgba(0, 212, 255, 0.3);
+  }
+  100% {
+    box-shadow: 0 6px 24px rgba(0, 212, 255, 0.5);
+  }
 }
 
 @media (max-width: 768px) {
@@ -235,18 +428,52 @@ body {
   }
 
   .clock {
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
+  }
+
+  .marker {
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+  }
+
+  .date-display {
+    padding: 18px 25px;
   }
 }
 
 @media (max-width: 480px) {
   .clock {
-    width: 240px;
-    height: 240px;
+    width: 260px;
+    height: 260px;
   }
 
   .marker {
+    width: 28px;
+    height: 28px;
     font-size: 14px;
+  }
+
+  .date-text {
+    font-size: 18px;
+  }
+
+  .date-display {
+    padding: 15px 20px;
+  }
+}
+
+.clock-face,
+.date-display,
+.marker {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

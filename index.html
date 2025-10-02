@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Orizon - Analog Clock</title>
+    <title>ORIZON - Digital Clock</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -11,11 +11,30 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="control-panel">
+      <button class="control-btn digital-toggle" id="digitalToggle">
+        <span class="btn-icon">📟</span>
+        <span class="btn-text">Digital</span>
+      </button>
+    </div>
+
     <div class="container">
       <div class="clock-container">
         <div class="date-display">
           <div class="date-text">Loading...</div>
           <div class="day-text">Today is...</div>
+        </div>
+
+        <div class="digital-display" id="digitalDisplay">
+          <div class="digital-time" id="digitalTime">
+            <span class="time-hours">00</span>
+            <span class="time-separator">:</span>
+            <span class="time-minutes">00</span>
+            <span class="time-separator">:</span>
+            <span class="time-seconds">00</span>
+            <span class="time-period">AM</span>
+          </div>
+          <div class="digital-label">Digital Time</div>
         </div>
 
         <div class="clock">
@@ -42,11 +61,11 @@
               <div class="center-dot"></div>
             </div>
 
-            <div class="brand-logo">Orizon</div>
+            <div class="brand-logo">ORIZON</div>
           </div>
         </div>
 
-        <div class="version-badge">v1.1</div>
+        <div class="version-badge">v1.2</div>
       </div>
     </div>
 

@@ -451,6 +451,9 @@ body::before {
 
 .marker {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -17.5px;
   width: 35px;
   height: 35px;
   display: flex;
@@ -475,76 +478,52 @@ body::before {
 }
 
 .hour-12 {
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%) rotate(0deg);
   --rotation: 0deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-1 {
-  top: 20px;
-  right: 58px;
-  transform: rotate(30deg);
   --rotation: 30deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-2 {
-  top: 58px;
-  right: 20px;
-  transform: rotate(60deg);
   --rotation: 60deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-3 {
-  top: 50%;
-  right: 8px;
-  transform: translateY(-50%) rotate(90deg);
   --rotation: 90deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-4 {
-  bottom: 58px;
-  right: 20px;
-  transform: rotate(120deg);
   --rotation: 120deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-5 {
-  bottom: 20px;
-  right: 58px;
-  transform: rotate(150deg);
   --rotation: 150deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-6 {
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%) rotate(180deg);
   --rotation: 180deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-7 {
-  bottom: 20px;
-  left: 58px;
-  transform: rotate(210deg);
   --rotation: 210deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-8 {
-  bottom: 58px;
-  left: 20px;
-  transform: rotate(240deg);
   --rotation: 240deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-9 {
-  top: 50%;
-  left: 8px;
-  transform: translateY(-50%) rotate(270deg);
   --rotation: 270deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-10 {
-  top: 58px;
-  left: 20px;
-  transform: rotate(300deg);
   --rotation: 300deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 .hour-11 {
-  top: 20px;
-  left: 58px;
-  transform: rotate(330deg);
   --rotation: 330deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
 }
 
 .hands {
@@ -575,6 +554,7 @@ body::before {
   );
   margin-left: -4px;
   border-radius: 4px 4px 20px 20px;
+  z-index: 6;
 }
 
 .minute-hand {
@@ -587,6 +567,7 @@ body::before {
   );
   margin-left: -3px;
   border-radius: 3px 3px 15px 15px;
+  z-index: 7;
 }
 
 .second-hand {
@@ -594,9 +575,10 @@ body::before {
   height: 130px;
   background: linear-gradient(to top, var(--accent-secondary), #ff8a8a);
   margin-left: -1.5px;
-  transition: transform 0.1s ease-out;
+  /*transition: transform 0.1s ease-out; */
   border-radius: 1.5px 1.5px 10px 10px;
   box-shadow: 0 2px 12px rgba(255, 107, 107, 0.4);
+  z-index: 8;
 }
 
 .center-dot {
@@ -628,6 +610,7 @@ body::before {
   color: var(--text-accent);
   letter-spacing: 3px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  z-index: 5;
 }
 
 .version-badge {

@@ -77,6 +77,17 @@ class DigitalClock {
     const hourAngle = (hours % 12) * 30 + minutes * 0.5 + seconds * (0.5 / 60);
     const minuteAngle = minutes * 6 + seconds * 0.1;
     const secondAngle = seconds * 6 + milliseconds * 0.006;
+    const secondHand = document.getElementById("secondHand");
+    if (secondHand) {
+      // Jab seconds 0 ho (sui 12 par ho), tab transition hata do
+      if (seconds === 0) {
+        secondHand.style.transition = "none";
+      }
+      // Baaki time transition waapis laga do
+      else {
+        secondHand.style.transition = "transform 0.1s ease-out";
+      }
+    }
 
     this.updateHand("hourHand", hourAngle);
     this.updateHand("minuteHand", minuteAngle);

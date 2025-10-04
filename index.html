@@ -3,72 +3,129 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ORIZON - Digital Clock</title>
+    <title>ORIZON - Analog Clock v2.0</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="control-panel">
-      <button class="control-btn digital-toggle" id="digitalToggle">
-        <span class="btn-icon">📟</span>
-        <span class="btn-text">Digital</span>
-      </button>
-    </div>
-
     <div class="container">
       <div class="clock-container">
-        <div class="date-display">
-          <div class="date-text">Loading...</div>
-          <div class="day-text">Today is...</div>
-        </div>
-
-        <div class="digital-display" id="digitalDisplay">
-          <div class="digital-time" id="digitalTime">
-            <span class="time-hours">00</span>
-            <span class="time-separator">:</span>
-            <span class="time-minutes">00</span>
-            <span class="time-separator">:</span>
-            <span class="time-seconds">00</span>
-            <span class="time-period">AM</span>
-          </div>
-          <div class="digital-label">Digital Time</div>
-        </div>
-
-        <div class="clock">
-          <div class="clock-face">
-            <div class="hour-markers">
-              <div class="marker hour-12"><span>12</span></div>
-              <div class="marker hour-1"><span>1</span></div>
-              <div class="marker hour-2"><span>2</span></div>
-              <div class="marker hour-3"><span>3</span></div>
-              <div class="marker hour-4"><span>4</span></div>
-              <div class="marker hour-5"><span>5</span></div>
-              <div class="marker hour-6"><span>6</span></div>
-              <div class="marker hour-7"><span>7</span></div>
-              <div class="marker hour-8"><span>8</span></div>
-              <div class="marker hour-9"><span>9</span></div>
-              <div class="marker hour-10"><span>10</span></div>
-              <div class="marker hour-11"><span>11</span></div>
+        <div class="main-clock-area">
+          <div class="date-wrapper">
+            <div class="date-display">
+              <div class="date-text">Loading...</div>
+              <div class="day-text">Today is...</div>
             </div>
-
-            <div class="hands">
-              <div class="hand hour-hand" id="hourHand"></div>
-              <div class="hand minute-hand" id="minuteHand"></div>
-              <div class="hand second-hand" id="secondHand"></div>
-              <div class="center-dot"></div>
+            <div class="version-badge">v2.0</div>
+          </div>
+          <div class="digital-display" id="digitalDisplay">
+            <div class="digital-time" id="digitalTime">
+              <span class="time-hours">00</span>
+              <span class="time-separator">:</span>
+              <span class="time-minutes">00</span>
+              <span class="time-separator">:</span>
+              <span class="time-seconds">00</span>
+              <span class="time-period">AM</span>
             </div>
-
-            <div class="brand-logo">ORIZON</div>
+            <div class="digital-label">Digital Time</div>
+          </div>
+          <div class="clock">
+            <div class="clock-face">
+              <div class="hour-markers">
+                <div class="marker hour-12"><span>12</span></div>
+                <div class="marker hour-1"><span>1</span></div>
+                <div class="marker hour-2"><span>2</span></div>
+                <div class="marker hour-3"><span>3</span></div>
+                <div class="marker hour-4"><span>4</span></div>
+                <div class="marker hour-5"><span>5</span></div>
+                <div class="marker hour-6"><span>6</span></div>
+                <div class="marker hour-7"><span>7</span></div>
+                <div class="marker hour-8"><span>8</span></div>
+                <div class="marker hour-9"><span>9</span></div>
+                <div class="marker hour-10"><span>10</span></div>
+                <div class="marker hour-11"><span>11</span></div>
+              </div>
+              <div class="hands">
+                <div class="hand hour-hand" id="hourHand"></div>
+                <div class="hand minute-hand" id="minuteHand"></div>
+                <div class="hand second-hand" id="secondHand"></div>
+                <div class="center-dot"></div>
+              </div>
+              <div class="brand-logo">ORIZON</div>
+            </div>
           </div>
         </div>
 
-        <div class="version-badge">v1.2</div>
+        <div class="sidebar-area" id="sidebarArea">
+          <button class="control-btn sidebar-toggle" id="sidebarToggle">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="control-panel">
+            <button class="control-btn digital-toggle" id="digitalToggle">
+              <span class="btn-icon"><i class="fa-solid fa-desktop"></i></span>
+              <span class="btn-text">Digital</span>
+            </button>
+            <button class="control-btn theme-toggle" id="themeToggle">
+              <span class="btn-icon"><i class="fa-solid fa-palette"></i></span>
+              <span class="btn-text">Theme</span>
+            </button>
+            <button class="control-btn settings-toggle" id="settingsToggle">
+              <span class="btn-icon"><i class="fa-solid fa-gear"></i></span>
+              <span class="btn-text">Settings</span>
+            </button>
+          </div>
+          <div class="settings-panel" id="settingsPanel">
+            <div class="settings-header">
+              <h3>Theme Settings</h3>
+              <button class="close-btn" id="closeSettings">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="settings-content">
+              <div class="theme-selector">
+                <label>Color Scheme:</label>
+                <div class="theme-options">
+                  <button class="theme-option active" data-theme="dark">
+                    <span class="theme-preview dark-preview"></span>
+                    <span>Dark</span>
+                  </button>
+                  <button class="theme-option" data-theme="light">
+                    <span class="theme-preview light-preview"></span>
+                    <span>Light</span>
+                  </button>
+                  <button class="theme-option" data-theme="midnight">
+                    <span class="theme-preview midnight-preview"></span>
+                    <span>Midnight</span>
+                  </button>
+                  <button class="theme-option" data-theme="sunset">
+                    <span class="theme-preview sunset-preview"></span>
+                    <span>Sunset</span>
+                  </button>
+                </div>
+              </div>
+              <div class="settings-divider"></div>
+              <div class="preferences">
+                <label class="preference-item">
+                  <input type="checkbox" id="autoTheme" />
+                  <span>Auto theme based on time</span>
+                </label>
+                <label class="preference-item">
+                  <input type="checkbox" id="smoothTransitions" checked />
+                  <span>Smooth theme transitions</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-
     <script src="script.js"></script>
   </body>
 </html>

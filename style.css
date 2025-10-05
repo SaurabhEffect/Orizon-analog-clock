@@ -525,17 +525,32 @@ body {
   color: var(--text-primary);
   transform-origin: center;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  /* CHANGE: 'box-shadow' ko transition me add kiya gaya hai glow effect ke liye */
+  transition: transform 0.4s var(--animation-bounce), color 0.3s ease,
+    background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .marker:hover {
   background: color-mix(in srgb, var(--accent-color) 20%, transparent);
   color: var(--accent-color);
+  /* CHANGE: Ab marker apni jagah par rehte hue 'scale' hoga aur 'glow' karega */
+  transform: rotate(var(--rotation)) translateY(-145px) scale(1.2);
+  box-shadow: 0 0 20px 0
+    color-mix(in srgb, var(--accent-color) 50%, transparent);
+  z-index: 100; /* Yeh marker ko doosre elements ke upar rakhega */
 }
 
 .marker span {
+  /* CHANGE: Span ke liye bhi transition add kiya gaya hai taaki number smoothly rotate ho */
+  transition: transform 0.4s var(--animation-bounce);
   transform: rotate(calc(var(--rotation) * -1));
 }
+
+/* NEW: Hover karne par number ko seedha karne ke liye */
+.marker:hover span {
+  transform: rotate(0deg);
+}
+
 .hour-12 {
   --rotation: 0deg;
   transform: rotate(var(--rotation)) translateY(-145px);

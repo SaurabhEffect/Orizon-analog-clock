@@ -515,24 +515,7 @@ class ThemeableClock {
     }
   }
 
-  setupMarkerEffects() {
-    const markers = document.querySelectorAll(".marker");
-    markers.forEach((marker, index) => {
-      marker.style.animationDelay = `${index * 0.1}s`;
-      marker.addEventListener("mouseenter", () => {
-        marker.style.transform += " scale(1.1)";
-        marker.style.zIndex = "10";
-      });
-
-      marker.addEventListener("mouseleave", () => {
-        marker.style.transform = marker.style.transform.replace(
-          " scale(1.1)",
-          ""
-        );
-        marker.style.zIndex = "";
-      });
-    });
-  }
+  setupMarkerEffects() {}
 
   setupPerformanceOptimization() {
     if ("IntersectionObserver" in window) {

@@ -1,4 +1,4 @@
-/* ORIZON v2.0 - Added Minimalist Themes */
+/* ORIZON v2.1 - Added Full-Screen Mode */
 
 :root {
   --bg-primary: linear-gradient(135deg, #2e3440 0%, #3b4252 100%);
@@ -525,7 +525,6 @@ body {
   color: var(--text-primary);
   transform-origin: center;
   border-radius: 50%;
-  /* CHANGE: 'box-shadow' ko transition me add kiya gaya hai glow effect ke liye */
   transition: transform 0.4s var(--animation-bounce), color 0.3s ease,
     background-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -533,20 +532,17 @@ body {
 .marker:hover {
   background: color-mix(in srgb, var(--accent-color) 20%, transparent);
   color: var(--accent-color);
-  /* CHANGE: Ab marker apni jagah par rehte hue 'scale' hoga aur 'glow' karega */
   transform: rotate(var(--rotation)) translateY(-145px) scale(1.2);
   box-shadow: 0 0 20px 0
     color-mix(in srgb, var(--accent-color) 50%, transparent);
-  z-index: 100; /* Yeh marker ko doosre elements ke upar rakhega */
+  z-index: 100;
 }
 
 .marker span {
-  /* CHANGE: Span ke liye bhi transition add kiya gaya hai taaki number smoothly rotate ho */
   transition: transform 0.4s var(--animation-bounce);
   transform: rotate(calc(var(--rotation) * -1));
 }
 
-/* NEW: Hover karne par number ko seedha karne ke liye */
 .marker:hover span {
   transform: rotate(0deg);
 }
@@ -778,5 +774,36 @@ body {
   }
   .digital-time {
     font-size: 22px;
+  }
+}
+
+body.is-fullscreen.hide-cursor {
+  cursor: none;
+}
+
+body.is-fullscreen .clock {
+  width: 420px;
+  height: 420px;
+  transition: all 0.5s var(--animation-bounce);
+}
+
+body.is-fullscreen .marker {
+  transform: rotate(var(--rotation)) translateY(-180px);
+}
+
+body.is-fullscreen .marker:hover {
+  transform: rotate(var(--rotation)) translateY(-180px) scale(1.2);
+}
+
+@media (max-width: 768px) {
+  body.is-fullscreen .clock {
+    width: 60vmin;
+    height: 60vmin;
+  }
+  body.is-fullscreen .marker {
+    transform: rotate(var(--rotation)) translateY(-26vmin);
+  }
+  body.is-fullscreen .marker:hover {
+    transform: rotate(var(--rotation)) translateY(-26vmin) scale(1.2);
   }
 }

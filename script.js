@@ -1,4 +1,4 @@
-// ORIZON v2.0 - Theme System(Dark/Light Modes)
+// ORIZON v2.1 - Added Full-Screen Mode
 
 class ThemeableClock {
   constructor() {
@@ -10,6 +10,7 @@ class ThemeableClock {
     this.currentTheme = "dark";
     this.autoTheme = false;
     this.smoothTransitions = true;
+    this.cursorHideTimeout = null;
     this.init();
   }
 
@@ -87,6 +88,27 @@ class ThemeableClock {
       });
     }
 
+    const fullscreenToggle = document.getElementById("fullscreenToggle");
+    if (fullscreenToggle) {
+      fullscreenToggle.addEventListener("click", () => this.toggleFullscreen());
+    }
+
+    // Fullscreen state change hone par icon badalne ke liye
+    document.addEventListener("fullscreenchange", () => {
+      const icon = fullscreenToggle.querySelector(".btn-icon i");
+      if (document.fullscreenElement) {
+        document.body.classList.add("is-fullscreen");
+        icon.classList.remove("fa-expand");
+        icon.classList.add("fa-compress");
+        this.manageCursorVisibility(); // <-- ADD THIS LINE
+      } else {
+        document.body.classList.remove("is-fullscreen");
+        icon.classList.remove("fa-compress");
+        icon.classList.add("fa-expand");
+        this.stopCursorManagement(); // <-- ADD THIS LINE
+      }
+    });
+
     document.addEventListener("keydown", (e) => {
       if (e.key.toLowerCase() === "d" || e.key.toLowerCase() === "ड") {
         e.preventDefault();
@@ -97,6 +119,10 @@ class ThemeableClock {
       } else if (e.key.toLowerCase() === "s" || e.key.toLowerCase() === "स") {
         e.preventDefault();
         this.toggleSettings();
+      } else if (e.key.toLowerCase() === "f" || e.key.toLowerCase() === "फ") {
+        // F KEY KA SHORTCUT
+        e.preventDefault();
+        this.toggleFullscreen();
       } else if (e.key === "Escape") {
         if (this.settingsVisible) {
           this.toggleSettings();
@@ -104,6 +130,36 @@ class ThemeableClock {
       }
     });
     console.log("🎛️ Theme system controls initialized");
+  }
+
+  manageCursorVisibility() {
+    document.body.classList.add("hide-cursor");
+    this.mouseMoveHandler = () => {
+      document.body.classList.remove("hide-cursor");
+      clearTimeout(this.cursorHideTimeout);
+      this.cursorHideTimeout = setTimeout(() => {
+        document.body.classList.add("hide-cursor");
+      }, 3000);
+    };
+    window.addEventListener("mousemove", this.mouseMoveHandler);
+  }
+
+  stopCursorManagement() {
+    clearTimeout(this.cursorHideTimeout);
+    if (this.mouseMoveHandler) {
+      window.removeEventListener("mousemove", this.mouseMoveHandler);
+    }
+    document.body.classList.remove("hide-cursor");
+  }
+
+  toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch((err) => {
+        console.error(`Fullscreen Error: ${err.message}`);
+      });
+    } else if (document.exitFullscreen) {
+      document.exitFullscreen();
+    }
   }
 
   loadThemePreferences() {
@@ -548,6 +604,7 @@ class ThemeableClock {
     if (this.dateUpdateInterval) {
       clearInterval(this.dateUpdateInterval);
     }
+    this.stopCursorManagement();
     console.log("🕐 ORIZON v2.0 - Clock destroyed");
   }
 }

@@ -1,4 +1,4 @@
-// ORIZON v2.1 - Added Full-Screen Mode
+// ORIZON v2.0 - Added Full-Screen Mode
 
 class ThemeableClock {
   constructor() {
@@ -81,55 +81,61 @@ class ThemeableClock {
         this.updateTransitionSettings();
       });
     }
-    const sidebarToggle = document.getElementById("sidebarToggle");
-    if (sidebarToggle) {
-      sidebarToggle.addEventListener("click", () => {
-        document.getElementById("sidebarArea").classList.toggle("is-open");
-      });
-    }
 
     const fullscreenToggle = document.getElementById("fullscreenToggle");
     if (fullscreenToggle) {
       fullscreenToggle.addEventListener("click", () => this.toggleFullscreen());
     }
 
-    // Fullscreen state change hone par icon badalne ke liye
+    const sidebarToggle = document.getElementById("sidebarToggle");
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener("click", () => this.toggleSidebar());
+    }
+
     document.addEventListener("fullscreenchange", () => {
       const icon = fullscreenToggle.querySelector(".btn-icon i");
       if (document.fullscreenElement) {
         document.body.classList.add("is-fullscreen");
         icon.classList.remove("fa-expand");
         icon.classList.add("fa-compress");
-        this.manageCursorVisibility(); // <-- ADD THIS LINE
+        this.manageCursorVisibility();
       } else {
         document.body.classList.remove("is-fullscreen");
         icon.classList.remove("fa-compress");
         icon.classList.add("fa-expand");
-        this.stopCursorManagement(); // <-- ADD THIS LINE
+        this.stopCursorManagement();
       }
     });
 
     document.addEventListener("keydown", (e) => {
-      if (e.key.toLowerCase() === "d" || e.key.toLowerCase() === "ड") {
+      const key = e.key.toLowerCase();
+      if (key === "d") {
         e.preventDefault();
         this.toggleDigitalDisplay();
-      } else if (e.key.toLowerCase() === "t" || e.key.toLowerCase() === "ट") {
+      } else if (key === "t") {
         e.preventDefault();
         this.quickThemeToggle();
-      } else if (e.key.toLowerCase() === "s" || e.key.toLowerCase() === "स") {
+      } else if (key === "s") {
         e.preventDefault();
         this.toggleSettings();
-      } else if (e.key.toLowerCase() === "f" || e.key.toLowerCase() === "फ") {
-        // F KEY KA SHORTCUT
+      } else if (key === "f") {
         e.preventDefault();
         this.toggleFullscreen();
-      } else if (e.key === "Escape") {
-        if (this.settingsVisible) {
-          this.toggleSettings();
-        }
+      } else if (key === "m") {
+        e.preventDefault();
+        this.toggleSidebar();
+      } else if (e.key === "Escape" && this.settingsVisible) {
+        this.toggleSettings();
       }
     });
     console.log("🎛️ Theme system controls initialized");
+  }
+
+  toggleSidebar() {
+    const sidebarArea = document.getElementById("sidebarArea");
+    if (sidebarArea) {
+      sidebarArea.classList.toggle("is-open");
+    }
   }
 
   manageCursorVisibility() {
@@ -292,21 +298,19 @@ class ThemeableClock {
     const settingsPanel = document.getElementById("settingsPanel");
     const settingsToggle = document.getElementById("settingsToggle");
     const sidebarArea = document.getElementById("sidebarArea");
-    if (!settingsPanel || !settingsToggle) return;
+    if (!settingsPanel || !settingsToggle || !sidebarArea) return;
+
     this.settingsVisible = !this.settingsVisible;
 
-    sidebarArea.classList.add("is-open");
-
     if (this.settingsVisible) {
+      sidebarArea.classList.add("is-open");
       settingsPanel.classList.add("show");
       settingsToggle.classList.add("active");
       settingsToggle.querySelector(".btn-text").textContent = "Close";
-      console.log("⚙️ Settings panel shown");
     } else {
       settingsPanel.classList.remove("show");
       settingsToggle.classList.remove("active");
       settingsToggle.querySelector(".btn-text").textContent = "Settings";
-      console.log("⚙️ Settings panel hidden");
     }
   }
 

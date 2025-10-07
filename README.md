@@ -56,6 +56,7 @@
 | **T**    | Theme Cycle     | Cycle through all 4 themes        |
 | **S**    | Settings Panel  | Open/close settings configuration |
 | **F**    | Fullscreen Mode | Enter/exit immersive fullscreen   |
+| **M**    | Menu            | Open Sidebar Menu                 |
 | **Esc**  | Exit/Close      | Close panels or exit fullscreen   |
 
 _All shortcuts work with both English and Hindi keyboard layouts_

@@ -1,4 +1,4 @@
-// ORIZON v2.0 - Added Full-Screen Mode
+// ORIZON v2.2 - Added Sound Effects
 
 class ThemeableClock {
   constructor() {
@@ -11,6 +11,11 @@ class ThemeableClock {
     this.autoTheme = false;
     this.smoothTransitions = true;
     this.cursorHideTimeout = null;
+    this.isSoundOn = false;
+    this.audioContextStarted = false;
+    this.synth = null;
+    this.lastSecond = -1;
+    this.wakeLockSentinel = null;
     this.init();
   }
 
@@ -26,8 +31,24 @@ class ThemeableClock {
       this.setupEnhancements();
       this.setupEventListeners();
       this.setupAutoTheme();
+      this.setupAudio();
       this.isInitialized = true;
     }, 500);
+  }
+
+  setupAudio() {
+    if (typeof Tone !== "undefined") {
+      this.synth = new Tone.MembraneSynth({
+        pitchDecay: 0.02,
+        octaves: 3,
+        envelope: {
+          attack: 0.001,
+          decay: 0.18,
+          sustain: 0,
+        },
+      }).toDestination();
+    }
+    this.updateSoundIcon();
   }
 
   setupEventListeners() {
@@ -81,6 +102,10 @@ class ThemeableClock {
         this.updateTransitionSettings();
       });
     }
+    const soundToggle = document.getElementById("soundToggle");
+    if (soundToggle) {
+      soundToggle.addEventListener("click", () => this.toggleSound());
+    }
 
     const fullscreenToggle = document.getElementById("fullscreenToggle");
     if (fullscreenToggle) {
@@ -99,11 +124,13 @@ class ThemeableClock {
         icon.classList.remove("fa-expand");
         icon.classList.add("fa-compress");
         this.manageCursorVisibility();
+        this.acquireWakeLock();
       } else {
         document.body.classList.remove("is-fullscreen");
         icon.classList.remove("fa-compress");
         icon.classList.add("fa-expand");
         this.stopCursorManagement();
+        this.releaseWakeLock();
       }
     });
 
@@ -126,9 +153,67 @@ class ThemeableClock {
         this.toggleSidebar();
       } else if (e.key === "Escape" && this.settingsVisible) {
         this.toggleSettings();
+      } else if (key === "a") {
+        e.preventDefault();
+        this.toggleSound();
       }
     });
     console.log("🎛️ Theme system controls initialized");
+  }
+
+  async toggleSound() {
+    if (typeof Tone === "undefined") {
+      console.error("Tone.js is not loaded.");
+      return;
+    }
+    if (!this.audioContextStarted) {
+      await Tone.start();
+      this.audioContextStarted = true;
+      console.log("Audio context started!");
+    }
+    this.isSoundOn = !this.isSoundOn;
+    this.updateSoundIcon();
+    this.saveThemePreferences();
+  }
+
+  async acquireWakeLock() {
+    if ("wakeLock" in navigator) {
+      try {
+        this.wakeLockSentinel = await navigator.wakeLock.request("screen");
+        console.log("Screen Wake Lock is active!");
+        this.wakeLockSentinel.addEventListener("release", () => {
+          console.log("Screen Wake Lock was released");
+          this.wakeLockSentinel = null;
+        });
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    } else {
+      console.warn("Screen Wake Lock API not supported.");
+    }
+  }
+
+  async releaseWakeLock() {
+    if (this.wakeLockSentinel !== null) {
+      await this.wakeLockSentinel.release();
+      this.wakeLockSentinel = null;
+    }
+  }
+
+  updateSoundIcon() {
+    const soundToggle = document.getElementById("soundToggle");
+    if (soundToggle) {
+      const icon = soundToggle.querySelector(".btn-icon i");
+      if (this.isSoundOn) {
+        icon.classList.remove("fa-volume-xmark");
+        icon.classList.add("fa-volume-high");
+        soundToggle.classList.add("active");
+      } else {
+        icon.classList.remove("fa-volume-high");
+        icon.classList.add("fa-volume-xmark");
+        soundToggle.classList.remove("active");
+      }
+    }
   }
 
   toggleSidebar() {
@@ -177,6 +262,7 @@ class ThemeableClock {
         this.autoTheme = prefs.autoTheme || false;
         this.smoothTransitions = prefs.smoothTransitions !== false;
         this.digitalVisible = prefs.digitalVisible || false;
+        this.isSoundOn = prefs.isSoundOn || false;
       }
     } catch (error) {
       console.warn("Could not load theme preferences:", error);
@@ -190,6 +276,7 @@ class ThemeableClock {
         autoTheme: this.autoTheme,
         smoothTransitions: this.smoothTransitions,
         digitalVisible: this.digitalVisible,
+        isSoundOn: this.isSoundOn,
       };
       localStorage.setItem("orizon-theme-preferences", JSON.stringify(prefs));
     } catch (error) {
@@ -315,15 +402,8 @@ class ThemeableClock {
   }
 
   setupIntervals() {
-    this.clockUpdateInterval = setInterval(() => {
-      this.updateClock();
-      if (this.autoTheme && new Date().getSeconds() === 0) {
-        this.updateAutoTheme();
-      }
-    }, 1000);
-    this.dateUpdateInterval = setInterval(() => {
-      this.updateDate();
-    }, 60000);
+    this.clockUpdateInterval = setInterval(() => this.updateClock(), 50);
+    this.dateUpdateInterval = setInterval(() => this.updateDate(), 60000);
   }
 
   setupEnhancements() {
@@ -339,7 +419,7 @@ class ThemeableClock {
         this.toggleDigitalDisplay();
       }, 100);
     }
-    console.log("🕐 ORIZON v2.0 - Theme System Initialized");
+    console.log("🕐 ORIZON v2.2 - Theme System Initialized");
   }
 
   updateClock() {
@@ -356,7 +436,12 @@ class ThemeableClock {
   updateAnalogClock(hours, minutes, seconds, milliseconds) {
     const hourAngle = (hours % 12) * 30 + minutes * 0.5 + seconds * (0.5 / 60);
     const minuteAngle = minutes * 6 + seconds * 0.1;
-    const secondAngle = seconds * 6 + milliseconds * 0.006;
+    const secondAngle = seconds * 6;
+    if (this.isSoundOn && this.synth && seconds !== this.lastSecond) {
+      this.synth.triggerAttackRelease("C2", "8n", Tone.now());
+      this.lastSecond = seconds;
+    }
+
     const secondHand = document.getElementById("secondHand");
     if (secondHand) {
       if (seconds === 0) {
@@ -461,7 +546,7 @@ class ThemeableClock {
       sunset: "🌅",
     };
     const themeIcon = themeEmojis[this.currentTheme] || "🌓";
-    document.title = `${modeIcon} ${timeString} ${themeIcon} - ORIZON v2.0`;
+    document.title = `${modeIcon} ${timeString} ${themeIcon} - ORIZON v2.2`;
   }
 
   toggleDigitalDisplay() {
@@ -609,7 +694,8 @@ class ThemeableClock {
       clearInterval(this.dateUpdateInterval);
     }
     this.stopCursorManagement();
-    console.log("🕐 ORIZON v2.0 - Clock destroyed");
+    this.releaseWakeLock();
+    console.log("🕐 ORIZON v2.2 - Clock destroyed");
   }
 }
 
@@ -677,7 +763,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 console.log(
-  "%c🕐 ORIZON v2.0 ",
+  "%c🕐 ORIZON v2.2 ",
   "background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold;"
 );
 console.log(

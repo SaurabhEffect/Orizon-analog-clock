@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ORIZON - Analog Clock v2.1</title>
+    <title>ORIZON - Analog Clock v2.2</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -12,6 +12,7 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -23,7 +24,7 @@
               <div class="date-text">Loading...</div>
               <div class="day-text">Today is...</div>
             </div>
-            <div class="version-badge">v2.1</div>
+            <div class="version-badge">v2.2</div>
           </div>
           <div class="digital-display" id="digitalDisplay">
             <div class="digital-time" id="digitalTime">
@@ -79,6 +80,12 @@
             <button class="control-btn" id="fullscreenToggle">
               <span class="btn-icon"><i class="fa-solid fa-expand"></i></span>
               <span class="btn-text">Full-Screen</span>
+            </button>
+            <button class="control-btn" id="soundToggle">
+              <span class="btn-icon"
+                ><i class="fa-solid fa-volume-xmark"></i
+              ></span>
+              <span class="btn-text">Sound</span>
             </button>
             <button class="control-btn settings-toggle" id="settingsToggle">
               <span class="btn-icon"><i class="fa-solid fa-gear"></i></span>

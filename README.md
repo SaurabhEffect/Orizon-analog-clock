@@ -22,6 +22,7 @@
 - **Smart Audio Control**: Toggle sound with 'A' key or dedicated sound button
 - **Persistent Settings**: Sound preferences automatically saved across sessions
 - **User-Initiated Audio**: Complies with modern browser autoplay policies
+- **Horly Chime**: Tell the user when the new hour starts
 
 ### 🔒 **Screen Wake Lock Technology**
 

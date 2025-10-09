@@ -16,6 +16,9 @@ class ThemeableClock {
     this.synth = null;
     this.lastSecond = -1;
     this.wakeLockSentinel = null;
+    this.isChimeOn = false;
+    this.chimeSynth = null;
+    this.lastChimePlayedHour = -1;
     this.init();
   }
 
@@ -38,14 +41,19 @@ class ThemeableClock {
 
   setupAudio() {
     if (typeof Tone !== "undefined") {
-      this.synth = new Tone.MembraneSynth({
-        pitchDecay: 0.02,
-        octaves: 3,
-        envelope: {
-          attack: 0.001,
-          decay: 0.18,
-          sustain: 0,
-        },
+      this.synth = new Tone.PluckSynth({
+        attackNoise: 1,
+        dampening: 4000,
+        resonance: 0.7,
+      }).toDestination();
+
+      this.chimeSynth = new Tone.MetalSynth({
+        frequency: 300,
+        envelope: { attack: 0.001, decay: 0.8, release: 0.1 },
+        harmonicity: 6.1,
+        modulationIndex: 20,
+        resonance: 3000,
+        octaves: 1.5,
       }).toDestination();
     }
     this.updateSoundIcon();
@@ -105,6 +113,13 @@ class ThemeableClock {
     const soundToggle = document.getElementById("soundToggle");
     if (soundToggle) {
       soundToggle.addEventListener("click", () => this.toggleSound());
+    }
+    const hourlyChimeCheckbox = document.getElementById("hourlyChime");
+    if (hourlyChimeCheckbox) {
+      hourlyChimeCheckbox.addEventListener("change", (e) => {
+        this.isChimeOn = e.target.checked;
+        this.saveThemePreferences();
+      });
     }
 
     const fullscreenToggle = document.getElementById("fullscreenToggle");
@@ -263,6 +278,7 @@ class ThemeableClock {
         this.smoothTransitions = prefs.smoothTransitions !== false;
         this.digitalVisible = prefs.digitalVisible || false;
         this.isSoundOn = prefs.isSoundOn || false;
+        this.isChimeOn = prefs.isChimeOn || false;
       }
     } catch (error) {
       console.warn("Could not load theme preferences:", error);
@@ -277,6 +293,7 @@ class ThemeableClock {
         smoothTransitions: this.smoothTransitions,
         digitalVisible: this.digitalVisible,
         isSoundOn: this.isSoundOn,
+        isChimeOn: this.isChimeOn,
       };
       localStorage.setItem("orizon-theme-preferences", JSON.stringify(prefs));
     } catch (error) {
@@ -402,7 +419,7 @@ class ThemeableClock {
   }
 
   setupIntervals() {
-    this.clockUpdateInterval = setInterval(() => this.updateClock(), 50);
+    this.clockUpdateInterval = setInterval(() => this.updateClock(), 1000);
     this.dateUpdateInterval = setInterval(() => this.updateDate(), 60000);
   }
 
@@ -411,6 +428,11 @@ class ThemeableClock {
     if (clockFace) {
       this.setupClockInteraction(clockFace);
     }
+    const hourlyChimeCheckbox = document.getElementById("hourlyChime");
+    if (hourlyChimeCheckbox) {
+      hourlyChimeCheckbox.checked = this.isChimeOn;
+    }
+
     this.setupMarkerEffects();
     this.setupDigitalInteractions();
     this.setupPerformanceOptimization();
@@ -428,6 +450,18 @@ class ThemeableClock {
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
     const milliseconds = now.getMilliseconds();
+    if (
+      this.isChimeOn &&
+      minutes === 0 &&
+      seconds === 0 &&
+      hours !== this.lastChimePlayedHour
+    ) {
+      if (this.chimeSynth && this.audioContextStarted) {
+        this.chimeSynth.triggerAttackRelease("G5", "4n", Tone.now());
+      }
+      this.lastChimePlayedHour = hours;
+    }
+
     this.updateAnalogClock(hours, minutes, seconds, milliseconds);
     this.updateDigitalClock(hours, minutes, seconds);
     this.updatePageTitle(hours, minutes, seconds);

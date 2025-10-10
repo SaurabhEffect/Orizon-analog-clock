@@ -40,7 +40,17 @@ class ThemeableClock {
   }
 
   setupAudio() {
-    if (typeof Tone !== "undefined") {
+    this.updateSoundIcon();
+  }
+
+  async initializeAudio() {
+    if (this.audioContextStarted || typeof Tone === "undefined") {
+      return;
+    }
+    try {
+      await Tone.start();
+      this.audioContextStarted = true;
+      console.log("Audio context started!");
       this.synth = new Tone.PluckSynth({
         attackNoise: 1,
         dampening: 4000,
@@ -55,8 +65,9 @@ class ThemeableClock {
         resonance: 3000,
         octaves: 1.5,
       }).toDestination();
+    } catch (error) {
+      console.error("Failed to initialize audio:", error);
     }
-    this.updateSoundIcon();
   }
 
   setupEventListeners() {
@@ -116,8 +127,11 @@ class ThemeableClock {
     }
     const hourlyChimeCheckbox = document.getElementById("hourlyChime");
     if (hourlyChimeCheckbox) {
-      hourlyChimeCheckbox.addEventListener("change", (e) => {
+      hourlyChimeCheckbox.addEventListener("change", async (e) => {
         this.isChimeOn = e.target.checked;
+        if (this.isChimeOn && !this.audioContextStarted) {
+          await this.initializeAudio();
+        }
         this.saveThemePreferences();
       });
     }
@@ -182,9 +196,7 @@ class ThemeableClock {
       return;
     }
     if (!this.audioContextStarted) {
-      await Tone.start();
-      this.audioContextStarted = true;
-      console.log("Audio context started!");
+      await this.initializeAudio();
     }
     this.isSoundOn = !this.isSoundOn;
     this.updateSoundIcon();

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ORIZON - Analog Clock v2.2</title>
+    <title>ORIZON - Analog Clock v3.0</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -16,6 +16,288 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <div class="left-panel-container">
+      <div class="settings-panel" id="themePanel">
+        <div class="settings-header">
+          <h3><i class="fa-solid fa-palette"></i> Theme Hub</h3>
+          <button class="close-btn" id="closeThemePanel">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="settings-content">
+          <div class="theme-selector">
+            <label>Color Scheme:</label>
+            <div class="theme-options">
+              <button class="theme-option" data-theme="dark">
+                <span class="theme-preview dark-preview"></span
+                ><span>Dark</span>
+              </button>
+              <button class="theme-option" data-theme="light">
+                <span class="theme-preview light-preview"></span
+                ><span>Light</span>
+              </button>
+              <button class="theme-option" data-theme="midnight">
+                <span class="theme-preview midnight-preview"></span
+                ><span>Midnight</span>
+              </button>
+              <button class="theme-option" data-theme="sunset">
+                <span class="theme-preview sunset-preview"></span
+                ><span>Sunset</span>
+              </button>
+              <button class="theme-option" data-theme="custom">
+                <span class="theme-preview custom-preview"
+                  ><i class="fa-solid fa-palette"></i
+                ></span>
+                <span>Custom</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="custom-theme-builder" id="customThemeBuilder">
+            <div class="settings-divider"></div>
+            <label
+              ><i class="fa-solid fa-brush"></i> Advanced Theme Builder:</label
+            >
+
+            <div class="theme-section">
+              <h4>Background Colors</h4>
+              <div class="theme-builder-grid">
+                <div class="color-picker-wrapper">
+                  <span>Primary Start</span>
+                  <input
+                    type="color"
+                    id="bgColorStart"
+                    data-var="--bg-primary-start"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Primary End</span>
+                  <input
+                    type="color"
+                    id="bgColorEnd"
+                    data-var="--bg-primary-end"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Glass Effect</span>
+                  <input
+                    type="color"
+                    id="glassColor"
+                    data-var="--bg-glass-color"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Glass Opacity</span>
+                  <input
+                    type="range"
+                    id="glassOpacity"
+                    min="0.1"
+                    max="1"
+                    step="0.1"
+                    value="0.5"
+                    data-var="--glass-opacity"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="theme-section">
+              <h4>Text & Accent Colors</h4>
+              <div class="theme-builder-grid">
+                <div class="color-picker-wrapper">
+                  <span>Primary Text</span>
+                  <input
+                    type="color"
+                    id="textColor"
+                    data-var="--text-primary"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Secondary Text</span>
+                  <input
+                    type="color"
+                    id="textSecondary"
+                    data-var="--text-secondary"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Main Accent</span>
+                  <input
+                    type="color"
+                    id="accentColor"
+                    data-var="--accent-color"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Second Accent</span>
+                  <input
+                    type="color"
+                    id="accentSecondary"
+                    data-var="--accent-secondary"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="theme-section">
+              <h4>Clock Hands & Elements</h4>
+              <div class="theme-builder-grid">
+                <div class="color-picker-wrapper">
+                  <span>Hour Hand</span>
+                  <input
+                    type="color"
+                    id="hourHandColor"
+                    data-var="--hour-hand-color"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Minute Hand</span>
+                  <input
+                    type="color"
+                    id="minuteHandColor"
+                    data-var="--minute-hand-color"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Second Hand</span>
+                  <input
+                    type="color"
+                    id="secondHandColor"
+                    data-var="--second-hand-color"
+                  />
+                </div>
+                <div class="color-picker-wrapper">
+                  <span>Center Dot</span>
+                  <input
+                    type="color"
+                    id="centerDotColor"
+                    data-var="--center-dot-color"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="theme-section">
+              <h4>Quick Color Presets</h4>
+              <div class="color-presets">
+                <button class="preset-btn" data-preset="ocean">Ocean</button>
+                <button class="preset-btn" data-preset="forest">Forest</button>
+                <button class="preset-btn" data-preset="volcano">
+                  Volcano
+                </button>
+                <button class="preset-btn" data-preset="lavender">
+                  Lavender
+                </button>
+                <button class="preset-btn" data-preset="gold">Gold</button>
+                <button class="preset-btn" data-preset="neon">Neon</button>
+              </div>
+            </div>
+
+            <div class="theme-builder-actions">
+              <button class="control-btn save-btn" id="saveCustomTheme">
+                <i class="fa-solid fa-save"></i> Save Theme
+              </button>
+              <button class="control-btn export-btn" id="exportTheme">
+                <i class="fa-solid fa-download"></i> Export
+              </button>
+              <button class="control-btn import-btn" id="importTheme">
+                <i class="fa-solid fa-upload"></i> Import
+              </button>
+              <button class="control-btn reset-btn" id="resetCustomTheme">
+                <i class="fa-solid fa-undo"></i> Reset
+              </button>
+            </div>
+
+            <div class="theme-name-section">
+              <input
+                type="text"
+                id="themeNameInput"
+                placeholder="My Custom Theme"
+                maxlength="20"
+              />
+              <button class="control-btn favorite-btn" id="favoriteTheme">
+                <i class="fa-solid fa-heart"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-panel" id="settingsPanel">
+        <div class="settings-header">
+          <h3><i class="fa-solid fa-gear"></i> Settings</h3>
+          <button class="close-btn" id="closeSettings">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="settings-content">
+          <div class="preferences">
+            <div class="preference-section">
+              <h4>Display</h4>
+              <label class="preference-item"
+                ><input type="checkbox" id="autoTheme" /><span
+                  >Auto theme based on time</span
+                ><i class="fa-solid fa-clock preference-icon"></i
+              ></label>
+              <label class="preference-item"
+                ><input type="checkbox" id="smoothTransitions" checked /><span
+                  >Smooth theme transitions</span
+                ><i class="fa-solid fa-magic-wand-sparkles preference-icon"></i
+              ></label>
+              <label class="preference-item"
+                ><input type="checkbox" id="showSeconds" checked /><span
+                  >Show seconds on digital display</span
+                ><i class="fa-solid fa-stopwatch preference-icon"></i
+              ></label>
+            </div>
+
+            <div class="preference-section">
+              <h4>Audio</h4>
+              <label class="preference-item"
+                ><input type="checkbox" id="soundToggle" /><span
+                  >Master Sound (On/Off)</span
+                ><i class="fa-solid fa-volume-high preference-icon"></i
+              ></label>
+              <label class="preference-item"
+                ><input type="checkbox" id="hourlyChime" /><span
+                  >Hourly chime (bell sound)</span
+                ><i class="fa-solid fa-bell preference-icon"></i
+              ></label>
+              <label class="preference-item"
+                ><input type="checkbox" id="tickSound" /><span
+                  >Tick sound for seconds</span
+                ><i class="fa-solid fa-music preference-icon"></i
+              ></label>
+              <div class="volume-control">
+                <span>Volume:</span>
+                <input
+                  type="range"
+                  id="volumeSlider"
+                  min="0"
+                  max="100"
+                  value="50"
+                /><span id="volumeValue">50%</span>
+              </div>
+            </div>
+
+            <div class="preference-section">
+              <h4>Performance</h4>
+              <label class="preference-item"
+                ><input type="checkbox" id="reducedMotion" /><span
+                  >Reduce animations</span
+                ><i class="fa-solid fa-gauge-simple preference-icon"></i
+              ></label>
+              <label class="preference-item"
+                ><input type="checkbox" id="powerSaver" /><span
+                  >Power saver mode</span
+                ><i class="fa-solid fa-battery-half preference-icon"></i
+              ></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="clock-container">
         <div class="main-clock-area">
@@ -24,15 +306,15 @@
               <div class="date-text">Loading...</div>
               <div class="day-text">Today is...</div>
             </div>
-            <div class="version-badge">v2.2</div>
+            <div class="version-badge">v3.0</div>
           </div>
           <div class="digital-display" id="digitalDisplay">
             <div class="digital-time" id="digitalTime">
-              <span class="time-hours">00</span>
-              <span class="time-separator">:</span>
-              <span class="time-minutes">00</span>
-              <span class="time-separator">:</span>
-              <span class="time-seconds">00</span>
+              <span class="time-hours">00</span
+              ><span class="time-separator">:</span
+              ><span class="time-minutes">00</span
+              ><span class="time-separator">:</span
+              ><span class="time-seconds">00</span>
               <span class="time-period">AM</span>
             </div>
             <div class="digital-label">Digital Time</div>
@@ -69,78 +351,33 @@
             <i class="fa-solid fa-bars"></i>
           </button>
           <div class="control-panel">
-            <button class="control-btn digital-toggle" id="digitalToggle">
+            <button class="control-btn" id="digitalToggle">
               <span class="btn-icon"><i class="fa-solid fa-desktop"></i></span>
               <span class="btn-text">Digital</span>
             </button>
-            <button class="control-btn theme-toggle" id="themeToggle">
+            <button class="control-btn" id="themeToggle">
               <span class="btn-icon"><i class="fa-solid fa-palette"></i></span>
               <span class="btn-text">Theme</span>
             </button>
             <button class="control-btn" id="fullscreenToggle">
               <span class="btn-icon"><i class="fa-solid fa-expand"></i></span>
-              <span class="btn-text">Full-Screen</span>
+              <span class="btn-text">Full</span>
             </button>
-            <button class="control-btn" id="soundToggle">
-              <span class="btn-icon"
-                ><i class="fa-solid fa-volume-xmark"></i
-              ></span>
-              <span class="btn-text">Sound</span>
-            </button>
-            <button class="control-btn settings-toggle" id="settingsToggle">
+            <button class="control-btn" id="settingsToggle">
               <span class="btn-icon"><i class="fa-solid fa-gear"></i></span>
               <span class="btn-text">Settings</span>
             </button>
           </div>
-          <div class="settings-panel" id="settingsPanel">
-            <div class="settings-header">
-              <h3>Theme Settings</h3>
-              <button class="close-btn" id="closeSettings">
-                <i class="fa-solid fa-xmark"></i>
-              </button>
-            </div>
-            <div class="settings-content">
-              <div class="theme-selector">
-                <label>Color Scheme:</label>
-                <div class="theme-options">
-                  <button class="theme-option active" data-theme="dark">
-                    <span class="theme-preview dark-preview"></span>
-                    <span>Dark</span>
-                  </button>
-                  <button class="theme-option" data-theme="light">
-                    <span class="theme-preview light-preview"></span>
-                    <span>Light</span>
-                  </button>
-                  <button class="theme-option" data-theme="midnight">
-                    <span class="theme-preview midnight-preview"></span>
-                    <span>Midnight</span>
-                  </button>
-                  <button class="theme-option" data-theme="sunset">
-                    <span class="theme-preview sunset-preview"></span>
-                    <span>Sunset</span>
-                  </button>
-                </div>
-              </div>
-              <div class="settings-divider"></div>
-              <div class="preferences">
-                <label class="preference-item">
-                  <input type="checkbox" id="autoTheme" />
-                  <span>Auto theme based on time</span>
-                </label>
-                <label class="preference-item">
-                  <input type="checkbox" id="smoothTransitions" checked />
-                  <span>Smooth theme transitions</span>
-                </label>
-                <label class="preference-item">
-                  <input type="checkbox" id="hourlyChime" />
-                  <span>Hourly Chime (Bell Sound)</span>
-                </label>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
+    <input
+      type="file"
+      id="themeFileInput"
+      accept=".json"
+      style="display: none"
+    />
+
     <script src="script.js"></script>
   </body>
 </html>

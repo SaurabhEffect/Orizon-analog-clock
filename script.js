@@ -1,34 +1,143 @@
-// ORIZON v2.2 - Added Sound Effects
+// ORIZON v3.0 - Customisation Hub
 
-class ThemeableClock {
+class EnhancedThemeableClock {
   constructor() {
     this.isInitialized = false;
     this.clockUpdateInterval = null;
     this.dateUpdateInterval = null;
     this.digitalVisible = false;
     this.settingsVisible = false;
+    this.themePanelVisible = false;
     this.currentTheme = "dark";
     this.autoTheme = false;
     this.smoothTransitions = true;
+    this.showSeconds = true;
+    this.reducedMotion = false;
+    this.powerSaver = false;
     this.cursorHideTimeout = null;
     this.isSoundOn = false;
     this.audioContextStarted = false;
     this.synth = null;
     this.lastSecond = -1;
-    this.wakeLockSentinel = null;
     this.isChimeOn = false;
+    this.tickSound = false;
     this.chimeSynth = null;
     this.lastChimePlayedHour = -1;
+    this.wakeLockSentinel = null;
+    this.volume = 0.5;
+
+    this.customTheme = {};
+    this.defaultCustomTheme = {
+      "--bg-primary-start": "#2e3440",
+      "--bg-primary-end": "#3b4252",
+      "--text-primary": "#eceff4",
+      "--text-secondary": "#d8dee9",
+      "--accent-color": "#88c0d0",
+      "--accent-secondary": "#bf616a",
+      "--bg-glass-color": "#4c566a",
+      "--glass-opacity": "0.5",
+      "--hour-hand-color": "#eceff4",
+      "--minute-hand-color": "#d8dee9",
+      "--second-hand-color": "#bf616a",
+      "--center-dot-color": "#bf616a",
+    };
+
+    this.colorPresets = {
+      ocean: {
+        "--bg-primary-start": "#0077be",
+        "--bg-primary-end": "#00a8cc",
+        "--text-primary": "#ffffff",
+        "--text-secondary": "#e0f7ff",
+        "--accent-color": "#00d4ff",
+        "--accent-secondary": "#ff6b35",
+        "--bg-glass-color": "#0077be",
+        "--glass-opacity": "0.6",
+        "--hour-hand-color": "#ffffff",
+        "--minute-hand-color": "#e0f7ff",
+        "--second-hand-color": "#ff6b35",
+        "--center-dot-color": "#ff6b35",
+      },
+      forest: {
+        "--bg-primary-start": "#2d5016",
+        "--bg-primary-end": "#4a7c59",
+        "--text-primary": "#f0f8e8",
+        "--text-secondary": "#c8e6c9",
+        "--accent-color": "#76ff03",
+        "--accent-secondary": "#ff5722",
+        "--bg-glass-color": "#4a7c59",
+        "--glass-opacity": "0.7",
+        "--hour-hand-color": "#f0f8e8",
+        "--minute-hand-color": "#c8e6c9",
+        "--second-hand-color": "#ff5722",
+        "--center-dot-color": "#ff5722",
+      },
+      volcano: {
+        "--bg-primary-start": "#d32f2f",
+        "--bg-primary-end": "#ff5722",
+        "--text-primary": "#ffffff",
+        "--text-secondary": "#ffcdd2",
+        "--accent-color": "#ffeb3b",
+        "--accent-secondary": "#ff9800",
+        "--bg-glass-color": "#d32f2f",
+        "--glass-opacity": "0.6",
+        "--hour-hand-color": "#ffffff",
+        "--minute-hand-color": "#ffcdd2",
+        "--second-hand-color": "#ffeb3b",
+        "--center-dot-color": "#ffeb3b",
+      },
+      lavender: {
+        "--bg-primary-start": "#7b1fa2",
+        "--bg-primary-end": "#9c27b0",
+        "--text-primary": "#ffffff",
+        "--text-secondary": "#e1bee7",
+        "--accent-color": "#e91e63",
+        "--accent-secondary": "#ff4081",
+        "--bg-glass-color": "#7b1fa2",
+        "--glass-opacity": "0.5",
+        "--hour-hand-color": "#ffffff",
+        "--minute-hand-color": "#e1bee7",
+        "--second-hand-color": "#e91e63",
+        "--center-dot-color": "#e91e63",
+      },
+      gold: {
+        "--bg-primary-start": "#ff8f00",
+        "--bg-primary-end": "#ffc107",
+        "--text-primary": "#3e2723",
+        "--text-secondary": "#6d4c41",
+        "--accent-color": "#795548",
+        "--accent-secondary": "#d32f2f",
+        "--bg-glass-color": "#ff8f00",
+        "--glass-opacity": "0.4",
+        "--hour-hand-color": "#3e2723",
+        "--minute-hand-color": "#6d4c41",
+        "--second-hand-color": "#d32f2f",
+        "--center-dot-color": "#d32f2f",
+      },
+      neon: {
+        "--bg-primary-start": "#000000",
+        "--bg-primary-end": "#1a1a1a",
+        "--text-primary": "#00ff41",
+        "--text-secondary": "#00ff88",
+        "--accent-color": "#ff0080",
+        "--accent-secondary": "#00ffff",
+        "--bg-glass-color": "#000000",
+        "--glass-opacity": "0.8",
+        "--hour-hand-color": "#00ff41",
+        "--minute-hand-color": "#00ff88",
+        "--second-hand-color": "#ff0080",
+        "--center-dot-color": "#ff0080",
+      },
+    };
+
+    this.favoriteThemes = [];
     this.init();
   }
 
   init() {
     this.loadThemePreferences();
     this.applyTheme(this.currentTheme);
-
     this.updateClock();
     this.updateDate();
-
     setTimeout(() => {
       this.setupIntervals();
       this.setupEnhancements();
@@ -40,17 +149,7 @@ class ThemeableClock {
   }
 
   setupAudio() {
-    this.updateSoundIcon();
-  }
-
-  async initializeAudio() {
-    if (this.audioContextStarted || typeof Tone === "undefined") {
-      return;
-    }
-    try {
-      await Tone.start();
-      this.audioContextStarted = true;
-      console.log("Audio context started!");
+    if (typeof Tone !== "undefined") {
       this.synth = new Tone.PluckSynth({
         attackNoise: 1,
         dampening: 4000,
@@ -65,166 +164,646 @@ class ThemeableClock {
         resonance: 3000,
         octaves: 1.5,
       }).toDestination();
-    } catch (error) {
-      console.error("Failed to initialize audio:", error);
+
+      this.synth.volume.value = Tone.gainToDb(this.volume);
+      this.chimeSynth.volume.value = Tone.gainToDb(this.volume);
     }
+    this.updateSoundIcon();
   }
 
   setupEventListeners() {
-    const digitalToggle = document.getElementById("digitalToggle");
-    if (digitalToggle) {
-      digitalToggle.addEventListener("click", () => {
-        this.toggleDigitalDisplay();
-      });
-    }
-    const themeToggle = document.getElementById("themeToggle");
-    if (themeToggle) {
-      themeToggle.addEventListener("click", () => {
-        this.quickThemeToggle();
-      });
-    }
-    const settingsToggle = document.getElementById("settingsToggle");
-    if (settingsToggle) {
-      settingsToggle.addEventListener("click", () => {
-        this.toggleSettings();
-      });
-    }
-    const closeSettings = document.getElementById("closeSettings");
-    if (closeSettings) {
-      closeSettings.addEventListener("click", () => {
-        this.toggleSettings();
-      });
-    }
-    const themeOptions = document.querySelectorAll(".theme-option");
-    themeOptions.forEach((option) => {
-      option.addEventListener("click", () => {
-        const theme = option.dataset.theme;
-        this.changeTheme(theme);
-      });
+    document
+      .getElementById("digitalToggle")
+      ?.addEventListener("click", () => this.toggleDigitalDisplay());
+    document
+      .getElementById("themeToggle")
+      ?.addEventListener("click", () => this.toggleThemePanel());
+    document
+      .getElementById("closeThemePanel")
+      ?.addEventListener("click", () => this.toggleThemePanel());
+    document
+      .getElementById("settingsToggle")
+      ?.addEventListener("click", () => this.toggleSettings());
+    document
+      .getElementById("closeSettings")
+      ?.addEventListener("click", () => this.toggleSettings());
+    document
+      .getElementById("fullscreenToggle")
+      ?.addEventListener("click", () => this.toggleFullscreen());
+    document
+      .getElementById("sidebarToggle")
+      ?.addEventListener("click", () =>
+        document.getElementById("sidebarArea")?.classList.toggle("is-open")
+      );
+    document
+      .getElementById("soundToggle")
+      ?.addEventListener("click", () => this.toggleSound());
+
+    document
+      .querySelectorAll(".theme-option")
+      .forEach((option) =>
+        option.addEventListener("click", () =>
+          this.changeTheme(option.dataset.theme)
+        )
+      );
+
+    document.getElementById("hourlyChime")?.addEventListener("change", (e) => {
+      this.isChimeOn = e.target.checked;
+      this.saveThemePreferences();
     });
-    const autoThemeCheckbox = document.getElementById("autoTheme");
-    if (autoThemeCheckbox) {
-      autoThemeCheckbox.addEventListener("change", (e) => {
-        this.autoTheme = e.target.checked;
+
+    document.getElementById("tickSound")?.addEventListener("change", (e) => {
+      this.tickSound = e.target.checked;
+      this.saveThemePreferences();
+    });
+
+    document.getElementById("showSeconds")?.addEventListener("change", (e) => {
+      this.showSeconds = e.target.checked;
+      this.updateDigitalDisplay();
+      this.saveThemePreferences();
+    });
+
+    document
+      .getElementById("reducedMotion")
+      ?.addEventListener("change", (e) => {
+        this.reducedMotion = e.target.checked;
+        document.body.classList.toggle("reduced-motion", this.reducedMotion);
         this.saveThemePreferences();
-        if (this.autoTheme) {
-          this.updateAutoTheme();
+      });
+
+    document.getElementById("powerSaver")?.addEventListener("change", (e) => {
+      this.powerSaver = e.target.checked;
+      this.updateClockInterval();
+      this.saveThemePreferences();
+    });
+
+    document.getElementById("volumeSlider")?.addEventListener("input", (e) => {
+      this.volume = e.target.value / 100;
+      document.getElementById("volumeValue").textContent = e.target.value + "%";
+      this.updateAudioVolume();
+      this.saveThemePreferences();
+    });
+
+    document
+      .querySelectorAll(
+        '#customThemeBuilder input[type="color"], #customThemeBuilder input[type="range"]'
+      )
+      .forEach((input) =>
+        input.addEventListener("input", (e) =>
+          this.updateCustomThemeLive(e.target)
+        )
+      );
+
+    document
+      .getElementById("saveCustomTheme")
+      ?.addEventListener("click", () => this.saveCustomTheme());
+    document
+      .getElementById("resetCustomTheme")
+      ?.addEventListener("click", () => this.resetCustomTheme());
+    document
+      .getElementById("exportTheme")
+      ?.addEventListener("click", () => this.exportTheme());
+    document
+      .getElementById("importTheme")
+      ?.addEventListener("click", () => this.importTheme());
+    document
+      .getElementById("favoriteTheme")
+      ?.addEventListener("click", () => this.toggleFavoriteTheme());
+
+    document.addEventListener("click", (event) => {
+      if (!this.themePanelVisible && !this.settingsVisible) {
+        return;
+      }
+      const target = event.target;
+      const isClickInsideLeftPanel = target.closest(".left-panel-container");
+      const isClickInsideSidebar = target.closest(".sidebar-area");
+      if (!isClickInsideLeftPanel && !isClickInsideSidebar) {
+        if (this.themePanelVisible) {
+          this.toggleThemePanel();
         }
-      });
-    }
-    const smoothTransitionsCheckbox =
-      document.getElementById("smoothTransitions");
-    if (smoothTransitionsCheckbox) {
-      smoothTransitionsCheckbox.addEventListener("change", (e) => {
-        this.smoothTransitions = e.target.checked;
-        this.saveThemePreferences();
-        this.updateTransitionSettings();
-      });
-    }
-    const soundToggle = document.getElementById("soundToggle");
-    if (soundToggle) {
-      soundToggle.addEventListener("click", () => this.toggleSound());
-    }
-    const hourlyChimeCheckbox = document.getElementById("hourlyChime");
-    if (hourlyChimeCheckbox) {
-      hourlyChimeCheckbox.addEventListener("change", async (e) => {
-        this.isChimeOn = e.target.checked;
-        if (this.isChimeOn && !this.audioContextStarted) {
-          await this.initializeAudio();
+        if (this.settingsVisible) {
+          this.toggleSettings(false);
         }
-        this.saveThemePreferences();
-      });
-    }
-
-    const fullscreenToggle = document.getElementById("fullscreenToggle");
-    if (fullscreenToggle) {
-      fullscreenToggle.addEventListener("click", () => this.toggleFullscreen());
-    }
-
-    const sidebarToggle = document.getElementById("sidebarToggle");
-    if (sidebarToggle) {
-      sidebarToggle.addEventListener("click", () => this.toggleSidebar());
-    }
-
-    document.addEventListener("fullscreenchange", () => {
-      const icon = fullscreenToggle.querySelector(".btn-icon i");
-      if (document.fullscreenElement) {
-        document.body.classList.add("is-fullscreen");
-        icon.classList.remove("fa-expand");
-        icon.classList.add("fa-compress");
-        this.manageCursorVisibility();
-        this.acquireWakeLock();
-      } else {
-        document.body.classList.remove("is-fullscreen");
-        icon.classList.remove("fa-compress");
-        icon.classList.add("fa-expand");
-        this.stopCursorManagement();
-        this.releaseWakeLock();
       }
     });
 
-    document.addEventListener("keydown", (e) => {
-      const key = e.key.toLowerCase();
-      if (key === "d") {
-        e.preventDefault();
-        this.toggleDigitalDisplay();
-      } else if (key === "t") {
-        e.preventDefault();
-        this.quickThemeToggle();
-      } else if (key === "s") {
-        e.preventDefault();
-        this.toggleSettings();
-      } else if (key === "f") {
-        e.preventDefault();
-        this.toggleFullscreen();
-      } else if (key === "m") {
-        e.preventDefault();
-        this.toggleSidebar();
-      } else if (e.key === "Escape" && this.settingsVisible) {
-        this.toggleSettings();
-      } else if (key === "a") {
-        e.preventDefault();
-        this.toggleSound();
-      }
-    });
-    console.log("🎛️ Theme system controls initialized");
+    document
+      .querySelectorAll(".preset-btn")
+      .forEach((btn) =>
+        btn.addEventListener("click", () =>
+          this.applyColorPreset(btn.dataset.preset)
+        )
+      );
+
+    document
+      .getElementById("themeFileInput")
+      ?.addEventListener("change", (e) => this.handleThemeImport(e));
+
+    document.addEventListener("fullscreenchange", () =>
+      this.handleFullscreenChange()
+    );
+    document.addEventListener("keydown", (e) => this.handleKeyDown(e));
   }
 
-  async toggleSound() {
-    if (typeof Tone === "undefined") {
-      console.error("Tone.js is not loaded.");
-      return;
+  updateAudioVolume() {
+    if (this.synth && this.chimeSynth) {
+      this.synth.volume.value = Tone.gainToDb(this.volume);
+      this.chimeSynth.volume.value = Tone.gainToDb(this.volume);
     }
-    if (!this.audioContextStarted) {
-      await this.initializeAudio();
+  }
+
+  updateClockInterval() {
+    if (this.clockUpdateInterval) {
+      clearInterval(this.clockUpdateInterval);
     }
-    this.isSoundOn = !this.isSoundOn;
-    this.updateSoundIcon();
+    const interval = this.powerSaver ? 1000 : 50;
+    this.clockUpdateInterval = setInterval(() => this.updateClock(), interval);
+  }
+
+  handleKeyDown(e) {
+    const key = e.key.toLowerCase();
+    const actions = {
+      d: () => this.toggleDigitalDisplay(),
+      t: () => this.toggleThemePanel(),
+      s: () => this.toggleSettings(),
+      f: () => this.toggleFullscreen(),
+      m: () =>
+        document.getElementById("sidebarArea")?.classList.toggle("is-open"),
+      a: () => this.toggleSound(),
+      q: () => this.quickThemeToggle(),
+    };
+
+    if (actions[key]) {
+      e.preventDefault();
+      actions[key]();
+    } else if (e.key === "Escape") {
+      if (this.settingsVisible) this.toggleSettings(false);
+      if (this.themePanelVisible) this.toggleThemePanel();
+    }
+  }
+
+  toggleThemePanel() {
+    this.themePanelVisible = !this.themePanelVisible;
+    const themePanel = document.getElementById("themePanel");
+    const themeToggle = document.getElementById("themeToggle");
+
+    if (this.themePanelVisible && this.settingsVisible) {
+      this.toggleSettings(false);
+    }
+
+    if (this.themePanelVisible) {
+      themePanel.classList.add("show");
+      themeToggle.classList.add("active");
+    } else {
+      themePanel.classList.remove("show");
+      themeToggle.classList.remove("active");
+    }
+  }
+
+  toggleSettings(forceState = null) {
+    this.settingsVisible =
+      forceState !== null ? forceState : !this.settingsVisible;
+    const settingsPanel = document.getElementById("settingsPanel");
+    const settingsToggle = document.getElementById("settingsToggle");
+
+    if (this.settingsVisible && this.themePanelVisible) {
+      this.toggleThemePanel();
+    }
+
+    if (this.settingsVisible) {
+      settingsPanel.classList.add("show");
+      settingsToggle.classList.add("active");
+    } else {
+      settingsPanel.classList.remove("show");
+      settingsToggle.classList.remove("active");
+    }
+  }
+
+  loadThemePreferences() {
+    try {
+      const saved = localStorage.getItem("orizon-theme-preferences");
+      if (saved) {
+        const prefs = JSON.parse(saved);
+        this.currentTheme = prefs.theme || "dark";
+        this.autoTheme = prefs.autoTheme || false;
+        this.smoothTransitions = prefs.smoothTransitions !== false;
+        this.digitalVisible = prefs.digitalVisible || false;
+        this.isSoundOn = prefs.isSoundOn || false;
+        this.isChimeOn = prefs.isChimeOn || false;
+        this.tickSound = prefs.tickSound || false;
+        this.showSeconds = prefs.showSeconds !== false;
+        this.reducedMotion = prefs.reducedMotion || false;
+        this.powerSaver = prefs.powerSaver || false;
+        this.volume = prefs.volume || 0.5;
+        this.customTheme = prefs.customTheme || { ...this.defaultCustomTheme };
+        this.favoriteThemes = prefs.favoriteThemes || [];
+      } else {
+        this.customTheme = { ...this.defaultCustomTheme };
+      }
+    } catch (error) {
+      console.warn("Could not load theme preferences:", error);
+      this.customTheme = { ...this.defaultCustomTheme };
+    }
+  }
+
+  saveThemePreferences() {
+    try {
+      const prefs = {
+        theme: this.currentTheme,
+        autoTheme: this.autoTheme,
+        smoothTransitions: this.smoothTransitions,
+        digitalVisible: this.digitalVisible,
+        isSoundOn: this.isSoundOn,
+        isChimeOn: this.isChimeOn,
+        tickSound: this.tickSound,
+        showSeconds: this.showSeconds,
+        reducedMotion: this.reducedMotion,
+        powerSaver: this.powerSaver,
+        volume: this.volume,
+        customTheme: this.customTheme,
+        favoriteThemes: this.favoriteThemes,
+      };
+      localStorage.setItem("orizon-theme-preferences", JSON.stringify(prefs));
+    } catch (error) {
+      console.warn("Could not save theme preferences:", error);
+    }
+  }
+
+  setupEnhancements() {
+    if (this.digitalVisible) {
+      setTimeout(() => this.toggleDigitalDisplay(), 100);
+    }
+
+    const checkboxes = {
+      autoTheme: this.autoTheme,
+      smoothTransitions: this.smoothTransitions,
+      hourlyChime: this.isChimeOn,
+      tickSound: this.tickSound,
+      showSeconds: this.showSeconds,
+      reducedMotion: this.reducedMotion,
+      powerSaver: this.powerSaver,
+    };
+
+    Object.entries(checkboxes).forEach(([id, value]) => {
+      const checkbox = document.getElementById(id);
+      if (checkbox) checkbox.checked = value;
+    });
+
+    const volumeSlider = document.getElementById("volumeSlider");
+    const volumeValue = document.getElementById("volumeValue");
+    if (volumeSlider && volumeValue) {
+      volumeSlider.value = this.volume * 100;
+      volumeValue.textContent = Math.round(this.volume * 100) + "%";
+    }
+
+    if (this.reducedMotion) {
+      document.body.classList.add("reduced-motion");
+    }
+  }
+
+  updateClock() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    if (
+      this.isSoundOn &&
+      this.isChimeOn &&
+      minutes === 0 &&
+      seconds === 0 &&
+      hours !== this.lastChimePlayedHour
+    ) {
+      if (this.chimeSynth && this.audioContextStarted) {
+        this.chimeSynth.triggerAttackRelease("G5", "4n", Tone.now());
+      }
+      this.lastChimePlayedHour = hours;
+    }
+
+    this.updateAnalogClock(hours, minutes, seconds, now.getMilliseconds());
+    this.updateDigitalDisplay(hours, minutes, seconds);
+  }
+
+  updateAnalogClock(hours, minutes, seconds, milliseconds) {
+    const hourAngle = (hours % 12) * 30 + minutes * 0.5 + seconds * (0.5 / 60);
+    const minuteAngle = minutes * 6 + seconds * 0.1;
+    const secondAngle = seconds * 6 + milliseconds * 0.006;
+
+    if (
+      this.isSoundOn &&
+      this.tickSound &&
+      this.synth &&
+      seconds !== this.lastSecond
+    ) {
+      if (this.audioContextStarted) {
+        this.synth.triggerAttack("C5", Tone.now());
+      }
+      this.lastSecond = seconds;
+    }
+
+    const secondHand = document.getElementById("secondHand");
+    if (secondHand) {
+      if (seconds === 0 && this.lastSecond === 59) {
+        secondHand.style.transition = "none";
+      } else {
+        secondHand.style.transition = this.powerSaver
+          ? "none"
+          : "transform 0.1s ease-out";
+      }
+    }
+
+    this.updateHand("hourHand", hourAngle);
+    this.updateHand("minuteHand", minuteAngle);
+    this.updateHand("secondHand", secondAngle);
+  }
+
+  updateDigitalDisplay(hours, minutes, seconds) {
+    if (!this.digitalVisible) return;
+
+    const hoursDisplay = document.querySelector(".time-hours");
+    const minutesDisplay = document.querySelector(".time-minutes");
+    const secondsDisplay = document.querySelector(".time-seconds");
+    const periodDisplay = document.querySelector(".time-period");
+
+    if (hoursDisplay && minutesDisplay && secondsDisplay && periodDisplay) {
+      const displayHours = hours % 12 || 12;
+      const period = hours >= 12 ? "PM" : "AM";
+
+      hoursDisplay.textContent = displayHours.toString().padStart(2, "0");
+      minutesDisplay.textContent = minutes.toString().padStart(2, "0");
+
+      if (this.showSeconds) {
+        secondsDisplay.textContent = seconds.toString().padStart(2, "0");
+        secondsDisplay.style.display = "inline-block";
+        document.querySelectorAll(".time-separator")[1].style.display =
+          "inline";
+      } else {
+        secondsDisplay.style.display = "none";
+        document.querySelectorAll(".time-separator")[1].style.display = "none";
+      }
+
+      periodDisplay.textContent = period;
+    }
+  }
+
+  applyTheme(themeName) {
+    document.documentElement.setAttribute("data-theme", themeName);
+    this.currentTheme = themeName;
+
+    document.querySelectorAll(".theme-option").forEach((option) => {
+      option.classList.toggle("active", option.dataset.theme === themeName);
+    });
+
+    const builder = document.getElementById("customThemeBuilder");
+    if (themeName === "custom") {
+      builder?.classList.add("show");
+      this.applyCustomTheme();
+      this.updateColorPickers();
+    } else {
+      builder?.classList.remove("show");
+      this.clearCustomStyles();
+    }
+
     this.saveThemePreferences();
   }
 
-  async acquireWakeLock() {
-    if ("wakeLock" in navigator) {
-      try {
-        this.wakeLockSentinel = await navigator.wakeLock.request("screen");
-        console.log("Screen Wake Lock is active!");
-        this.wakeLockSentinel.addEventListener("release", () => {
-          console.log("Screen Wake Lock was released");
-          this.wakeLockSentinel = null;
-        });
-      } catch (err) {
-        console.error(`${err.name}, ${err.message}`);
-      }
+  updateCustomThemeLive(inputElement) {
+    const varName = inputElement.dataset.var;
+    const value = inputElement.value;
+
+    if (inputElement.type === "range") {
+      document.documentElement.style.setProperty(varName, value);
     } else {
-      console.warn("Screen Wake Lock API not supported.");
+      document.documentElement.style.setProperty(varName, value);
+    }
+
+    if (varName === "--bg-primary-start" || varName === "--bg-primary-end") {
+      const start = document.getElementById("bgColorStart").value;
+      const end = document.getElementById("bgColorEnd").value;
+      document.documentElement.style.setProperty(
+        "--bg-primary",
+        `linear-gradient(135deg, ${start} 0%, ${end} 100%)`
+      );
+    }
+
+    if (varName === "--bg-glass-color" || varName === "--glass-opacity") {
+      const color = document.getElementById("glassColor").value;
+      const opacity = document.getElementById("glassOpacity").value;
+      document.documentElement.style.setProperty(
+        "--bg-glass",
+        `color-mix(in srgb, ${color} ${opacity * 100}%, transparent)`
+      );
     }
   }
 
-  async releaseWakeLock() {
-    if (this.wakeLockSentinel !== null) {
-      await this.wakeLockSentinel.release();
-      this.wakeLockSentinel = null;
+  saveCustomTheme() {
+    const inputs = document.querySelectorAll(
+      '#customThemeBuilder input[type="color"], #customThemeBuilder input[type="range"]'
+    );
+    inputs.forEach((input) => {
+      this.customTheme[input.dataset.var] = input.value;
+    });
+
+    const themeName = document.getElementById("themeNameInput")?.value.trim();
+    if (themeName) {
+      this.customTheme.name = themeName;
     }
+
+    this.saveThemePreferences();
+
+    const saveBtn = document.getElementById("saveCustomTheme");
+    const originalText = saveBtn.innerHTML;
+    saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Saved!';
+    saveBtn.style.background = "var(--accent-green)";
+
+    setTimeout(() => {
+      saveBtn.innerHTML = originalText;
+      saveBtn.style.background = "";
+    }, 2000);
+  }
+
+  resetCustomTheme() {
+    this.customTheme = { ...this.defaultCustomTheme };
+    this.applyCustomTheme();
+    this.updateColorPickers();
+    this.saveThemePreferences();
+
+    const themeNameInput = document.getElementById("themeNameInput");
+    if (themeNameInput) themeNameInput.value = "";
+  }
+
+  applyCustomTheme() {
+    Object.entries(this.customTheme).forEach(([property, value]) => {
+      if (property !== "name") {
+        document.documentElement.style.setProperty(property, value);
+      }
+    });
+
+    const start = this.customTheme["--bg-primary-start"];
+    const end = this.customTheme["--bg-primary-end"];
+    if (start && end) {
+      document.documentElement.style.setProperty(
+        "--bg-primary",
+        `linear-gradient(135deg, ${start} 0%, ${end} 100%)`
+      );
+    }
+
+    const glassColor = this.customTheme["--bg-glass-color"];
+    const glassOpacity = this.customTheme["--glass-opacity"];
+    if (glassColor && glassOpacity) {
+      document.documentElement.style.setProperty(
+        "--bg-glass",
+        `color-mix(in srgb, ${glassColor} ${glassOpacity * 100}%, transparent)`
+      );
+    }
+  }
+
+  clearCustomStyles() {
+    Object.keys(this.defaultCustomTheme).forEach((property) => {
+      document.documentElement.style.removeProperty(property);
+    });
+    document.documentElement.style.removeProperty("--bg-primary");
+    document.documentElement.style.removeProperty("--bg-glass");
+  }
+
+  updateColorPickers() {
+    Object.entries(this.customTheme).forEach(([property, value]) => {
+      const input = document.querySelector(`[data-var="${property}"]`);
+      if (input && property !== "name") {
+        input.value = value;
+      }
+    });
+
+    const themeNameInput = document.getElementById("themeNameInput");
+    if (themeNameInput && this.customTheme.name) {
+      themeNameInput.value = this.customTheme.name;
+    }
+  }
+
+  applyColorPreset(presetName) {
+    const preset = this.colorPresets[presetName];
+    if (!preset) return;
+
+    this.customTheme = { ...this.customTheme, ...preset };
+    this.applyCustomTheme();
+    this.updateColorPickers();
+
+    const presetBtn = document.querySelector(`[data-preset="${presetName}"]`);
+    const originalBg = presetBtn.style.background;
+    presetBtn.style.background = "var(--accent-color)";
+    presetBtn.style.color = "white";
+
+    setTimeout(() => {
+      presetBtn.style.background = originalBg;
+      presetBtn.style.color = "";
+    }, 1000);
+  }
+
+  exportTheme() {
+    const themeData = {
+      name: this.customTheme.name || "Custom Theme",
+      version: "3.2",
+      theme: this.customTheme,
+      timestamp: new Date().toISOString(),
+    };
+
+    const dataStr = JSON.stringify(themeData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(dataBlob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `orizon-theme-${themeData.name
+      .toLowerCase()
+      .replace(/\s+/g, "-")}.json`;
+    link.click();
+
+    URL.revokeObjectURL(url);
+  }
+
+  importTheme() {
+    document.getElementById("themeFileInput").click();
+  }
+
+  handleThemeImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const themeData = JSON.parse(e.target.result);
+        if (themeData.theme) {
+          this.customTheme = { ...this.defaultCustomTheme, ...themeData.theme };
+          this.applyCustomTheme();
+          this.updateColorPickers();
+          this.saveThemePreferences();
+
+          const importBtn = document.getElementById("importTheme");
+          const originalText = importBtn.innerHTML;
+          importBtn.innerHTML = '<i class="fa-solid fa-check"></i> Imported!';
+          importBtn.style.background = "var(--accent-green)";
+
+          setTimeout(() => {
+            importBtn.innerHTML = originalText;
+            importBtn.style.background = "";
+          }, 2000);
+        }
+      } catch (error) {
+        console.error("Failed to import theme:", error);
+        alert("Failed to import theme. Please check the file format.");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = "";
+  }
+
+  toggleFavoriteTheme() {
+    const currentThemeData = {
+      name: this.customTheme.name || "Unnamed Theme",
+      theme: { ...this.customTheme },
+    };
+
+    const existingIndex = this.favoriteThemes.findIndex(
+      (theme) => theme.name === currentThemeData.name
+    );
+
+    const favoriteBtn = document.getElementById("favoriteTheme");
+
+    if (existingIndex >= 0) {
+      this.favoriteThemes.splice(existingIndex, 1);
+      favoriteBtn.classList.remove("active");
+    } else {
+      this.favoriteThemes.push(currentThemeData);
+      favoriteBtn.classList.add("active");
+    }
+
+    this.saveThemePreferences();
+  }
+
+  changeTheme(themeName) {
+    if (this.currentTheme === themeName) return;
+    this.applyTheme(themeName);
+  }
+
+  quickThemeToggle() {
+    const themes = ["dark", "light", "midnight", "sunset", "custom"];
+    const currentIndex = themes.indexOf(this.currentTheme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    this.changeTheme(themes[nextIndex]);
+  }
+
+  async toggleSound() {
+    if (typeof Tone === "undefined") return;
+
+    if (!this.audioContextStarted) {
+      await Tone.start();
+      this.audioContextStarted = true;
+    }
+
+    this.isSoundOn = !this.isSoundOn;
+    this.updateSoundIcon();
+    this.saveThemePreferences();
   }
 
   updateSoundIcon() {
@@ -232,21 +811,51 @@ class ThemeableClock {
     if (soundToggle) {
       const icon = soundToggle.querySelector(".btn-icon i");
       if (this.isSoundOn) {
-        icon.classList.remove("fa-volume-xmark");
-        icon.classList.add("fa-volume-high");
+        icon.classList.replace("fa-volume-xmark", "fa-volume-high");
         soundToggle.classList.add("active");
       } else {
-        icon.classList.remove("fa-volume-high");
-        icon.classList.add("fa-volume-xmark");
+        icon.classList.replace("fa-volume-high", "fa-volume-xmark");
         soundToggle.classList.remove("active");
       }
     }
   }
 
-  toggleSidebar() {
-    const sidebarArea = document.getElementById("sidebarArea");
-    if (sidebarArea) {
-      sidebarArea.classList.toggle("is-open");
+  toggleDigitalDisplay() {
+    const digitalDisplay = document.getElementById("digitalDisplay");
+    const digitalToggle = document.getElementById("digitalToggle");
+    if (!digitalDisplay || !digitalToggle) return;
+
+    this.digitalVisible = !this.digitalVisible;
+
+    if (this.digitalVisible) {
+      digitalDisplay.classList.add("show");
+      digitalToggle.classList.add("active");
+      digitalToggle.querySelector(".btn-text").textContent = "Hide";
+    } else {
+      digitalDisplay.classList.remove("show");
+      digitalToggle.classList.remove("active");
+      digitalToggle.querySelector(".btn-text").textContent = "Digital";
+    }
+
+    this.saveThemePreferences();
+  }
+
+  handleFullscreenChange() {
+    const fullscreenToggle = document.getElementById("fullscreenToggle");
+    if (document.fullscreenElement) {
+      document.body.classList.add("is-fullscreen");
+      fullscreenToggle
+        .querySelector(".btn-icon i")
+        .classList.replace("fa-expand", "fa-compress");
+      this.manageCursorVisibility();
+      this.acquireWakeLock();
+    } else {
+      document.body.classList.remove("is-fullscreen");
+      fullscreenToggle
+        .querySelector(".btn-icon i")
+        .classList.replace("fa-compress", "fa-expand");
+      this.stopCursorManagement();
+      this.releaseWakeLock();
     }
   }
 
@@ -270,273 +879,76 @@ class ThemeableClock {
     document.body.classList.remove("hide-cursor");
   }
 
+  async acquireWakeLock() {
+    if ("wakeLock" in navigator) {
+      try {
+        this.wakeLockSentinel = await navigator.wakeLock.request("screen");
+        this.wakeLockSentinel.addEventListener("release", () => {
+          this.wakeLockSentinel = null;
+        });
+      } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+      }
+    }
+  }
+
+  async releaseWakeLock() {
+    if (this.wakeLockSentinel !== null) {
+      await this.wakeLockSentinel.release();
+      this.wakeLockSentinel = null;
+    }
+  }
+
   toggleFullscreen() {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch((err) => {
-        console.error(`Fullscreen Error: ${err.message}`);
-      });
+      document.documentElement
+        .requestFullscreen()
+        .catch((err) => console.error(err));
     } else if (document.exitFullscreen) {
       document.exitFullscreen();
     }
   }
 
-  loadThemePreferences() {
-    try {
-      const saved = localStorage.getItem("orizon-theme-preferences");
-      if (saved) {
-        const prefs = JSON.parse(saved);
-        this.currentTheme = prefs.theme || "dark";
-        this.autoTheme = prefs.autoTheme || false;
-        this.smoothTransitions = prefs.smoothTransitions !== false;
-        this.digitalVisible = prefs.digitalVisible || false;
-        this.isSoundOn = prefs.isSoundOn || false;
-        this.isChimeOn = prefs.isChimeOn || false;
-      }
-    } catch (error) {
-      console.warn("Could not load theme preferences:", error);
-    }
-  }
-
-  saveThemePreferences() {
-    try {
-      const prefs = {
-        theme: this.currentTheme,
-        autoTheme: this.autoTheme,
-        smoothTransitions: this.smoothTransitions,
-        digitalVisible: this.digitalVisible,
-        isSoundOn: this.isSoundOn,
-        isChimeOn: this.isChimeOn,
-      };
-      localStorage.setItem("orizon-theme-preferences", JSON.stringify(prefs));
-    } catch (error) {
-      console.warn("Could not save theme preferences:", error);
-    }
-  }
-
-  applyTheme(themeName) {
-    document.documentElement.setAttribute("data-theme", themeName);
-    this.currentTheme = themeName;
-    document.querySelectorAll(".theme-option").forEach((option) => {
-      option.classList.toggle("active", option.dataset.theme === themeName);
-    });
-    const themeToggle = document.getElementById("themeToggle");
-    if (themeToggle) {
-      const themeIcons = {
-        dark: "🌙",
-        light: "☀️",
-        midnight: "🌃",
-        sunset: "🌅",
-      };
-      const themeIcon = themeToggle.querySelector(".btn-icon");
-      if (themeIcon) {
-        themeIcon.textContent = themeIcons[themeName] || "🌓";
-      }
-    }
-    this.saveThemePreferences();
-    console.log(`🎨 Theme changed to: ${themeName}`);
-  }
-
-  changeTheme(themeName) {
-    if (this.currentTheme === themeName) return;
-    this.applyTheme(themeName);
-    this.triggerThemeChangeAnimation();
-  }
-
-  quickThemeToggle() {
-    const themes = ["dark", "light", "midnight", "sunset"];
-    const currentIndex = themes.indexOf(this.currentTheme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    this.changeTheme(themes[nextIndex]);
-  }
-
-  triggerThemeChangeAnimation() {
-    const container = document.querySelector(".clock-container");
-    if (container) {
-      container.style.animation = "none";
-      setTimeout(() => {}, 10);
-      setTimeout(() => {
-        container.style.animation = "";
-      }, 600);
-    }
-  }
-
   setupAutoTheme() {
-    if (this.autoTheme) {
-      this.updateAutoTheme();
-      setInterval(() => {
-        if (this.autoTheme) {
-          this.updateAutoTheme();
-        }
-      }, 3600000);
-    }
-
     const autoThemeCheckbox = document.getElementById("autoTheme");
-    const smoothTransitionsCheckbox =
-      document.getElementById("smoothTransitions");
     if (autoThemeCheckbox) {
       autoThemeCheckbox.checked = this.autoTheme;
+      autoThemeCheckbox.addEventListener("change", (e) => {
+        this.autoTheme = e.target.checked;
+        this.saveThemePreferences();
+        if (this.autoTheme) {
+          this.applyAutoTheme();
+        }
+      });
     }
-    if (smoothTransitionsCheckbox) {
-      smoothTransitionsCheckbox.checked = this.smoothTransitions;
-    }
-    this.updateTransitionSettings();
   }
 
-  updateAutoTheme() {
+  applyAutoTheme() {
     if (!this.autoTheme) return;
+
     const hour = new Date().getHours();
     let autoTheme;
+
     if (hour >= 6 && hour < 12) {
       autoTheme = "light";
     } else if (hour >= 12 && hour < 18) {
       autoTheme = "sunset";
     } else if (hour >= 18 && hour < 22) {
-      autoTheme = "sunset";
+      autoTheme = "dark";
     } else {
       autoTheme = "midnight";
     }
 
-    if (this.currentTheme !== autoTheme) {
+    if (autoTheme !== this.currentTheme) {
       this.changeTheme(autoTheme);
-      console.log(`🕐 Auto theme changed to ${autoTheme} based on time`);
-    }
-  }
-
-  updateTransitionSettings() {
-    if (this.smoothTransitions) {
-      document.documentElement.style.removeProperty("--theme-transition");
-    } else {
-      document.documentElement.style.setProperty("--theme-transition", "none");
-    }
-  }
-
-  toggleSettings() {
-    const settingsPanel = document.getElementById("settingsPanel");
-    const settingsToggle = document.getElementById("settingsToggle");
-    const sidebarArea = document.getElementById("sidebarArea");
-    if (!settingsPanel || !settingsToggle || !sidebarArea) return;
-
-    this.settingsVisible = !this.settingsVisible;
-
-    if (this.settingsVisible) {
-      sidebarArea.classList.add("is-open");
-      settingsPanel.classList.add("show");
-      settingsToggle.classList.add("active");
-      settingsToggle.querySelector(".btn-text").textContent = "Close";
-    } else {
-      settingsPanel.classList.remove("show");
-      settingsToggle.classList.remove("active");
-      settingsToggle.querySelector(".btn-text").textContent = "Settings";
     }
   }
 
   setupIntervals() {
-    this.clockUpdateInterval = setInterval(() => this.updateClock(), 1000);
+    this.updateClockInterval();
     this.dateUpdateInterval = setInterval(() => this.updateDate(), 60000);
-  }
-
-  setupEnhancements() {
-    const clockFace = document.querySelector(".clock-face");
-    if (clockFace) {
-      this.setupClockInteraction(clockFace);
-    }
-    const hourlyChimeCheckbox = document.getElementById("hourlyChime");
-    if (hourlyChimeCheckbox) {
-      hourlyChimeCheckbox.checked = this.isChimeOn;
-    }
-
-    this.setupMarkerEffects();
-    this.setupDigitalInteractions();
-    this.setupPerformanceOptimization();
-    if (this.digitalVisible) {
-      setTimeout(() => {
-        this.toggleDigitalDisplay();
-      }, 100);
-    }
-    console.log("🕐 ORIZON v2.2 - Theme System Initialized");
-  }
-
-  updateClock() {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const seconds = now.getSeconds();
-    const milliseconds = now.getMilliseconds();
-    if (
-      this.isChimeOn &&
-      minutes === 0 &&
-      seconds === 0 &&
-      hours !== this.lastChimePlayedHour
-    ) {
-      if (this.chimeSynth && this.audioContextStarted) {
-        this.chimeSynth.triggerAttackRelease("G5", "4n", Tone.now());
-      }
-      this.lastChimePlayedHour = hours;
-    }
-
-    this.updateAnalogClock(hours, minutes, seconds, milliseconds);
-    this.updateDigitalClock(hours, minutes, seconds);
-    this.updatePageTitle(hours, minutes, seconds);
-  }
-
-  updateAnalogClock(hours, minutes, seconds, milliseconds) {
-    const hourAngle = (hours % 12) * 30 + minutes * 0.5 + seconds * (0.5 / 60);
-    const minuteAngle = minutes * 6 + seconds * 0.1;
-    const secondAngle = seconds * 6;
-    if (this.isSoundOn && this.synth && seconds !== this.lastSecond) {
-      this.synth.triggerAttackRelease("C2", "8n", Tone.now());
-      this.lastSecond = seconds;
-    }
-
-    const secondHand = document.getElementById("secondHand");
-    if (secondHand) {
-      if (seconds === 0) {
-        secondHand.style.transition = "none";
-      } else {
-        secondHand.style.transition = "transform 0.1s ease-out";
-      }
-    }
-
-    this.updateHand("hourHand", hourAngle);
-    this.updateHand("minuteHand", minuteAngle);
-    this.updateHand("secondHand", secondAngle);
-  }
-
-  updateDigitalClock(hours, minutes, seconds) {
-    const timeHours = document.querySelector(".time-hours");
-    const timeMinutes = document.querySelector(".time-minutes");
-    const timeSeconds = document.querySelector(".time-seconds");
-    const timePeriod = document.querySelector(".time-period");
-
-    if (timeHours && timeMinutes && timeSeconds && timePeriod) {
-      const displayHours = hours === 0 ? 12 : hours > 12 ? hours - 12 : hours;
-      const period = hours >= 12 ? "PM" : "AM";
-      this.updateDigitalElement(
-        timeHours,
-        displayHours.toString().padStart(2, "0")
-      );
-      this.updateDigitalElement(
-        timeMinutes,
-        minutes.toString().padStart(2, "0")
-      );
-      this.updateDigitalElement(
-        timeSeconds,
-        seconds.toString().padStart(2, "0")
-      );
-      this.updateDigitalElement(timePeriod, period);
-    }
-  }
-
-  updateDigitalElement(element, newValue) {
-    if (element && element.textContent !== newValue) {
-      element.style.transform = "scale(1.1)";
-      element.style.color = "var(--accent-color)";
-
-      setTimeout(() => {
-        element.textContent = newValue;
-        element.style.transform = "scale(1)";
-        element.style.color = "var(--text-primary)";
-      }, 150);
+    if (this.autoTheme) {
+      setInterval(() => this.applyAutoTheme(), 3600000);
     }
   }
 
@@ -557,278 +969,37 @@ class ThemeableClock {
       month: "long",
       day: "numeric",
     };
-    const timeOptions = {
-      weekday: "long",
-    };
-    const formattedDate = now.toLocaleDateString("en-US", dateOptions);
-    const dayName = now.toLocaleDateString("en-US", timeOptions);
-    this.updateDateDisplay(formattedDate, dayName);
-  }
+    const dayOptions = { weekday: "long" };
+    const dateEl = document.querySelector(".date-text");
+    const dayEl = document.querySelector(".day-text");
 
-  updateDateDisplay(dateText, dayText) {
-    const dateElement = document.querySelector(".date-text");
-    const dayElement = document.querySelector(".day-text");
-    if (dateElement && dayElement) {
-      dateElement.style.opacity = "0.7";
-      dayElement.style.opacity = "0.7";
-      setTimeout(() => {
-        dateElement.textContent = dateText;
-        dayElement.textContent = `Today is ${dayText}`;
-        dateElement.style.opacity = "1";
-        dayElement.style.opacity = "1";
-      }, 150);
-    }
-  }
-
-  updatePageTitle(hours, minutes, seconds) {
-    const timeString = `${hours.toString().padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
-    const modeIcon = this.digitalVisible ? "📟" : "🕐";
-    const themeEmojis = {
-      dark: "🌙",
-      light: "☀️",
-      midnight: "🌃",
-      sunset: "🌅",
-    };
-    const themeIcon = themeEmojis[this.currentTheme] || "🌓";
-    document.title = `${modeIcon} ${timeString} ${themeIcon} - ORIZON v2.2`;
-  }
-
-  toggleDigitalDisplay() {
-    const digitalDisplay = document.getElementById("digitalDisplay");
-    const digitalToggle = document.getElementById("digitalToggle");
-    if (!digitalDisplay || !digitalToggle) return;
-    this.digitalVisible = !this.digitalVisible;
-    if (this.digitalVisible) {
-      digitalDisplay.classList.add("show");
-      digitalToggle.classList.add("active");
-      digitalToggle.querySelector(".btn-text").textContent = "Hide";
-      console.log("📟 Digital display shown");
-    } else {
-      digitalDisplay.classList.remove("show");
-      digitalToggle.classList.remove("active");
-      digitalToggle.querySelector(".btn-text").textContent = "Digital";
-      console.log("📟 Digital display hidden");
-    }
-    this.saveThemePreferences();
-    this.updatePageTitle(
-      new Date().getHours(),
-      new Date().getMinutes(),
-      new Date().getSeconds()
-    );
-  }
-
-  triggerDigitalEntrance() {
-    const digitalTime = document.querySelector(".digital-time");
-    if (digitalTime) {
-      digitalTime.style.animation = "none";
-      setTimeout(() => {
-        digitalTime.style.animation = "digitalEntrance 0.8s ease";
-      }, 10);
-      setTimeout(() => {
-        digitalTime.style.animation = "";
-      }, 800);
-    }
-  }
-
-  setupDigitalInteractions() {
-    const timeSegments = document.querySelectorAll(
-      ".time-hours, .time-minutes, .time-seconds"
-    );
-    timeSegments.forEach((segment) => {
-      segment.addEventListener("mouseenter", () => {
-        segment.style.background = "var(--accent-color)";
-        segment.style.backgroundOpacity = "0.2";
-        segment.style.borderColor = "var(--accent-color)";
-      });
-      segment.addEventListener("mouseleave", () => {
-        segment.style.background = "var(--bg-secondary)";
-        segment.style.borderColor = "var(--border-glass)";
-      });
-      segment.addEventListener("click", () => {
-        this.triggerSegmentPulse(segment);
-      });
-    });
-    const timePeriod = document.querySelector(".time-period");
-    if (timePeriod) {
-      timePeriod.addEventListener("click", () => {
-        this.triggerPeriodAnimation();
-      });
-    }
-  }
-
-  triggerSegmentPulse(segment) {
-    segment.style.transform = "scale(1.2)";
-    segment.style.color = "var(--accent-color)";
-    setTimeout(() => {
-      segment.style.transform = "scale(1)";
-      segment.style.color = "var(--text-primary)";
-    }, 200);
-  }
-
-  triggerPeriodAnimation() {
-    const timePeriod = document.querySelector(".time-period");
-    if (timePeriod) {
-      timePeriod.style.animation = "none";
-      setTimeout(() => {
-        timePeriod.style.animation = "periodFlip 0.6s ease";
-      }, 10);
-      setTimeout(() => {
-        timePeriod.style.animation =
-          "periodGlow 3s ease-in-out infinite alternate";
-      }, 600);
-    }
-  }
-
-  setupClockInteraction(clockFace) {
-    clockFace.addEventListener("mouseenter", () => {
-      clockFace.style.transform = "scale(1.02)";
-    });
-    clockFace.addEventListener("mouseleave", () => {
-      clockFace.style.transform = "scale(1)";
-    });
-    clockFace.addEventListener("click", () => {
-      this.triggerClockPulse();
-    });
-  }
-
-  triggerClockPulse() {
-    const clockFace = document.querySelector(".clock-face");
-    if (clockFace) {
-      clockFace.style.animation = "none";
-      setTimeout(() => {
-        clockFace.style.animation = "clockPulse 0.6s ease";
-      }, 10);
-      setTimeout(() => {
-        clockFace.style.animation = "";
-      }, 600);
-    }
-  }
-
-  setupMarkerEffects() {}
-
-  setupPerformanceOptimization() {
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting && this.clockUpdateInterval) {
-            clearInterval(this.clockUpdateInterval);
-            this.clockUpdateInterval = setInterval(() => {
-              this.updateClock();
-            }, 5000);
-          } else if (entry.isIntersecting) {
-            if (this.clockUpdateInterval) {
-              clearInterval(this.clockUpdateInterval);
-            }
-            this.clockUpdateInterval = setInterval(() => {
-              this.updateClock();
-            }, 1000);
-          }
-        });
-      });
-
-      observer.observe(document.querySelector(".clock"));
-    }
+    if (dateEl)
+      dateEl.textContent = now.toLocaleDateString("en-US", dateOptions);
+    if (dayEl)
+      dayEl.textContent = `Today is ${now.toLocaleDateString(
+        "en-US",
+        dayOptions
+      )}`;
   }
 
   destroy() {
-    if (this.clockUpdateInterval) {
-      clearInterval(this.clockUpdateInterval);
-    }
-    if (this.dateUpdateInterval) {
-      clearInterval(this.dateUpdateInterval);
-    }
+    clearInterval(this.clockUpdateInterval);
+    clearInterval(this.dateUpdateInterval);
     this.stopCursorManagement();
     this.releaseWakeLock();
-    console.log("🕐 ORIZON v2.2 - Clock destroyed");
   }
 }
 
-const themeAnimations = `
-@keyframes digitalEntrance {
-    0% { 
-        opacity: 0;
-        transform: translateY(-10px) scale(0.8);
-    }
-    50% {
-        opacity: 0.7;
-        transform: translateY(5px) scale(1.1);
-    }
-    100% { 
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes periodFlip {
-    0% { transform: rotateY(0deg); }
-    50% { transform: rotateY(180deg) scale(1.2); }
-    100% { transform: rotateY(360deg); }
-}
-
-@keyframes clockPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-@keyframes themeChange {
-    0% { 
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-    50% {
-        opacity: 0.8;
-        transform: translateY(-5px) scale(1.02);
-    }
-    100% { 
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}`;
-
-const style = document.createElement("style");
-style.textContent = themeAnimations;
-document.head.appendChild(style);
-
 document.addEventListener("DOMContentLoaded", () => {
-  const clock = new ThemeableClock();
+  const clock = new EnhancedThemeableClock();
 
   document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-      console.log("🕐 Clock hidden - reducing updates");
-    } else {
-      console.log("🕐 Clock visible - resuming normal updates");
+    if (document.hidden && clock.wakeLockSentinel) {
+      clock.releaseWakeLock();
+    } else if (!document.hidden && document.fullscreenElement) {
+      clock.acquireWakeLock();
     }
   });
 
-  window.addEventListener("beforeunload", () => {
-    clock.destroy();
-  });
+  window.addEventListener("beforeunload", () => clock.destroy());
 });
-
-console.log(
-  "%c🕐 ORIZON v2.2 ",
-  "background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 8px 16px; border-radius: 8px; font-weight: bold;"
-);
-console.log(
-  "%c🌓 Theme System Loaded ✨",
-  "color: #9c27b0; font-weight: bold;"
-);
-console.log(
-  "%c📟 Digital Display Feature Available",
-  "color: #00e676; font-weight: bold;"
-);
-console.log(
-  "%c💡 Keyboard shortcuts: D=Digital, T=Theme, S=Settings, Esc=Close",
-  "color: #ff6b6b; font-style: italic;"
-);
-console.log(
-  "%c🎯 All v1.2 features preserved + theme system",
-  "color: #00d4ff; font-weight: bold;"
-);
-console.log(
-  "%c💾 Theme preferences saved in localStorage",
-  "color: #feca57; font-weight: bold;"
-);

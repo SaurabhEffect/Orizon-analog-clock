@@ -1,4 +1,4 @@
-/* ORIZON v3.0 - Customisation Hub */
+/* ORIZON v3.1 - Added Timezone Toggle */
 
 :root {
   --bg-primary: linear-gradient(135deg, #2e3440 0%, #3b4252 100%);
@@ -1181,4 +1181,129 @@ body.is-fullscreen .marker:hover {
     var(--accent-color) 80%,
     var(--text-primary) 20%
   );
+}
+
+.timezone-selector {
+  margin-bottom: 20px;
+}
+
+.timezone-dropdown {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.timezone-dropdown:hover {
+  border-color: var(--accent-color);
+  background: color-mix(
+    in srgb,
+    var(--bg-secondary) 80%,
+    var(--accent-color) 20%
+  );
+}
+
+.timezone-dropdown:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color) 20%, transparent);
+}
+
+.timezone-dropdown optgroup {
+  font-weight: 600;
+  color: var(--text-primary);
+  background: var(--bg-glass);
+}
+
+.timezone-dropdown option {
+  padding: 8px;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.timezone-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+  padding: 12px;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-glass);
+}
+
+.timezone-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+}
+
+.info-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.info-value {
+  color: var(--accent-color);
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.quick-cities {
+  margin-top: 20px;
+}
+
+.quick-cities h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.city-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.city-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-glass);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.city-btn:hover {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px
+    color-mix(in srgb, var(--accent-color) 40%, transparent);
+}
+
+.city-btn:active {
+  transform: translateY(0);
+}
+
+.city-btn i {
+  font-size: 14px;
 }

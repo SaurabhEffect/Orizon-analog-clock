@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ORIZON - Analog Clock v3.0</title>
+    <title>ORIZON - Analog Clock v3.1</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
@@ -58,7 +58,6 @@
             <label
               ><i class="fa-solid fa-brush"></i> Advanced Theme Builder:</label
             >
-
             <div class="theme-section">
               <h4>Background Colors</h4>
               <div class="theme-builder-grid">
@@ -223,6 +222,84 @@
         </div>
       </div>
 
+      <div class="settings-panel" id="timezonePanel">
+        <div class="settings-header">
+          <h3><i class="fa-solid fa-earth-americas"></i> World Clock</h3>
+          <button class="close-btn" id="closeTimezonePanel">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="settings-content">
+          <label>Select Timezone:</label>
+          <div class="timezone-selector">
+            <select id="timezoneSelect" class="timezone-dropdown">
+              <option value="local">Local Time</option>
+              <optgroup label="Americas">
+                <option value="America/New_York">New York (EST)</option>
+                <option value="America/Chicago">Chicago (CST)</option>
+                <option value="America/Los_Angeles">Los Angeles (PST)</option>
+                <option value="America/Toronto">Toronto</option>
+                <option value="America/Mexico_City">Mexico City</option>
+                <option value="America/Sao_Paulo">São Paulo</option>
+              </optgroup>
+              <optgroup label="Europe">
+                <option value="Europe/London">London (GMT)</option>
+                <option value="Europe/Paris">Paris (CET)</option>
+                <option value="Europe/Berlin">Berlin</option>
+                <option value="Europe/Moscow">Moscow</option>
+                <option value="Europe/Istanbul">Istanbul</option>
+              </optgroup>
+              <optgroup label="Asia">
+                <option value="Asia/Dubai">Dubai</option>
+                <option value="Asia/Kolkata">India (IST)</option>
+                <option value="Asia/Singapore">Singapore</option>
+                <option value="Asia/Tokyo">Tokyo</option>
+                <option value="Asia/Shanghai">Shanghai</option>
+                <option value="Asia/Hong_Kong">Hong Kong</option>
+              </optgroup>
+              <optgroup label="Pacific">
+                <option value="Australia/Sydney">Sydney</option>
+                <option value="Pacific/Auckland">Auckland</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="timezone-info">
+            <div class="timezone-info-item">
+              <span class="info-label">Current Zone:</span>
+              <span class="info-value" id="currentZoneName">Local Time</span>
+            </div>
+            <div class="timezone-info-item">
+              <span class="info-label">UTC Offset:</span>
+              <span class="info-value" id="utcOffset">+00:00</span>
+            </div>
+          </div>
+          <div class="quick-cities">
+            <h4>Quick Access:</h4>
+            <div class="city-buttons">
+              <button class="city-btn" data-timezone="Asia/Kolkata">
+                <i class="fa-solid fa-flag"></i> India
+              </button>
+              <button class="city-btn" data-timezone="America/New_York">
+                <i class="fa-solid fa-flag-usa"></i> New York
+              </button>
+              <button class="city-btn" data-timezone="Europe/London">
+                <i class="fa-solid fa-flag"></i> London
+              </button>
+              <button class="city-btn" data-timezone="Asia/Tokyo">
+                <i class="fa-solid fa-flag"></i> Tokyo
+              </button>
+              <button class="city-btn" data-timezone="Australia/Sydney">
+                <i class="fa-solid fa-flag"></i> Sydney
+              </button>
+              <button class="city-btn" data-timezone="local">
+                <i class="fa-solid fa-location-dot"></i> Local
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="settings-panel" id="settingsPanel">
         <div class="settings-header">
           <h3><i class="fa-solid fa-gear"></i> Settings</h3>
@@ -250,7 +327,6 @@
                 ><i class="fa-solid fa-stopwatch preference-icon"></i
               ></label>
             </div>
-
             <div class="preference-section">
               <h4>Audio</h4>
               <label class="preference-item"
@@ -279,7 +355,6 @@
                 /><span id="volumeValue">50%</span>
               </div>
             </div>
-
             <div class="preference-section">
               <h4>Performance</h4>
               <label class="preference-item"
@@ -306,7 +381,7 @@
               <div class="date-text">Loading...</div>
               <div class="day-text">Today is...</div>
             </div>
-            <div class="version-badge">v3.0</div>
+            <div class="version-badge">v3.1</div>
           </div>
           <div class="digital-display" id="digitalDisplay">
             <div class="digital-time" id="digitalTime">
@@ -358,6 +433,12 @@
             <button class="control-btn" id="themeToggle">
               <span class="btn-icon"><i class="fa-solid fa-palette"></i></span>
               <span class="btn-text">Theme</span>
+            </button>
+            <button class="control-btn" id="timezoneToggle">
+              <span class="btn-icon"
+                ><i class="fa-solid fa-earth-americas"></i
+              ></span>
+              <span class="btn-text">Timezone</span>
             </button>
             <button class="control-btn" id="fullscreenToggle">
               <span class="btn-icon"><i class="fa-solid fa-expand"></i></span>

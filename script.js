@@ -1,4 +1,4 @@
-// ORIZON v3.0 - Customisation Hub
+// ORIZON v3.1 - Added Timezone Toggle
 
 class EnhancedThemeableClock {
   constructor() {
@@ -25,7 +25,7 @@ class EnhancedThemeableClock {
     this.lastChimePlayedHour = -1;
     this.wakeLockSentinel = null;
     this.volume = 0.5;
-
+    this.timezonePanelVisible = false;
     this.customTheme = {};
     this.defaultCustomTheme = {
       "--bg-primary-start": "#2e3440",
@@ -41,7 +41,6 @@ class EnhancedThemeableClock {
       "--second-hand-color": "#bf616a",
       "--center-dot-color": "#bf616a",
     };
-
     this.colorPresets = {
       ocean: {
         "--bg-primary-start": "#0077be",
@@ -128,8 +127,9 @@ class EnhancedThemeableClock {
         "--center-dot-color": "#ff0080",
       },
     };
-
     this.favoriteThemes = [];
+    this.currentTimezone = "local";
+    this.timezoneOffset = 0;
     this.init();
   }
 
@@ -146,6 +146,12 @@ class EnhancedThemeableClock {
       this.setupAudio();
       this.isInitialized = true;
     }, 500);
+    const savedTimezone = localStorage.getItem("orizon-timezone");
+    if (savedTimezone) {
+      this.changeTimezone(savedTimezone);
+    }
+    this.setupUIControls();
+    this.setupOutsideClickDetection();
   }
 
   setupAudio() {
@@ -303,6 +309,29 @@ class EnhancedThemeableClock {
       this.handleFullscreenChange()
     );
     document.addEventListener("keydown", (e) => this.handleKeyDown(e));
+    document.getElementById("timezoneToggle")?.addEventListener("click", () => {
+      this.toggleTimezonePanel();
+    });
+
+    document
+      .getElementById("closeTimezonePanel")
+      ?.addEventListener("click", () => {
+        if (this.timezonePanelVisible) {
+          this.toggleTimezonePanel();
+        }
+      });
+
+    document
+      .getElementById("timezoneSelect")
+      ?.addEventListener("change", (e) => {
+        this.changeTimezone(e.target.value);
+      });
+
+    document.querySelectorAll(".city-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.changeTimezone(btn.dataset.timezone);
+      });
+    });
   }
 
   updateAudioVolume() {
@@ -331,6 +360,7 @@ class EnhancedThemeableClock {
         document.getElementById("sidebarArea")?.classList.toggle("is-open"),
       a: () => this.toggleSound(),
       q: () => this.quickThemeToggle(),
+      z: () => this.togglePanel("timezonePanel"),
     };
 
     if (actions[key]) {
@@ -344,39 +374,90 @@ class EnhancedThemeableClock {
 
   toggleThemePanel() {
     this.themePanelVisible = !this.themePanelVisible;
-    const themePanel = document.getElementById("themePanel");
-    const themeToggle = document.getElementById("themeToggle");
 
-    if (this.themePanelVisible && this.settingsVisible) {
-      this.toggleSettings(false);
-    }
+    const panel = document.getElementById("themePanel");
 
     if (this.themePanelVisible) {
-      themePanel.classList.add("show");
-      themeToggle.classList.add("active");
+      if (this.timezonePanelVisible) {
+        this.toggleTimezonePanel();
+      }
+      if (this.settingsVisible) {
+        this.toggleSettings(false);
+      }
+      panel?.classList.add("show");
     } else {
-      themePanel.classList.remove("show");
-      themeToggle.classList.remove("active");
+      panel?.classList.remove("show");
+      const customBuilder = document.getElementById("customThemeBuilder");
+      customBuilder?.classList.remove("show");
     }
   }
 
   toggleSettings(forceState = null) {
-    this.settingsVisible =
-      forceState !== null ? forceState : !this.settingsVisible;
-    const settingsPanel = document.getElementById("settingsPanel");
-    const settingsToggle = document.getElementById("settingsToggle");
-
-    if (this.settingsVisible && this.themePanelVisible) {
-      this.toggleThemePanel();
+    if (forceState !== null) {
+      this.settingsVisible = forceState;
+    } else {
+      this.settingsVisible = !this.settingsVisible;
     }
+
+    const panel = document.getElementById("settingsPanel");
 
     if (this.settingsVisible) {
-      settingsPanel.classList.add("show");
-      settingsToggle.classList.add("active");
+      if (this.themePanelVisible) {
+        this.toggleThemePanel();
+      }
+      if (this.timezonePanelVisible) {
+        this.toggleTimezonePanel();
+      }
+
+      panel?.classList.add("show");
     } else {
-      settingsPanel.classList.remove("show");
-      settingsToggle.classList.remove("active");
+      panel?.classList.remove("show");
     }
+  }
+
+  toggleTimezonePanel() {
+    this.timezonePanelVisible = !this.timezonePanelVisible;
+    const panel = document.getElementById("timezonePanel");
+    if (this.timezonePanelVisible) {
+      if (this.themePanelVisible) {
+        this.toggleThemePanel();
+      }
+      if (this.settingsVisible) {
+        this.toggleSettings(false);
+      }
+      panel?.classList.add("show");
+    } else {
+      panel?.classList.remove("show");
+    }
+  }
+
+  togglePanel(panelId) {
+    const panel = document.getElementById(panelId);
+    const isVisible = panel?.classList.contains("show");
+
+    // Close all other panels first
+    this.closeAllPanels();
+
+    // Toggle requested panel
+    if (!isVisible) {
+      panel?.classList.add("show");
+    }
+  }
+
+  closePanel(panelId) {
+    const panel = document.getElementById(panelId);
+    panel?.classList.remove("show");
+  }
+
+  closeAllPanels() {
+    if (this.themePanelVisible) {
+      this.toggleThemePanel();
+    }
+    if (this.settingsVisible) {
+      this.toggleSettings(false);
+    }
+    const timezonePanel = document.getElementById("timezonePanel");
+    timezonePanel?.classList.remove("show");
   }
 
   loadThemePreferences() {
@@ -461,8 +542,42 @@ class EnhancedThemeableClock {
     }
   }
 
+  setupOutsideClickDetection() {
+    document.addEventListener("click", (e) => {
+      const themePanelEl = document.getElementById("themePanel");
+      const timezonePanelEl = document.getElementById("timezonePanel");
+      const settingsPanelEl = document.getElementById("settingsPanel");
+      const themeBtn = document.getElementById("themeToggle");
+      const timezoneBtn = document.getElementById("timezoneToggle");
+      const settingsBtn = document.getElementById("settingsToggle");
+      const clickedElement = e.target;
+      const isInsideThemePanel = themePanelEl?.contains(clickedElement);
+      const isInsideTimezonePanel = timezonePanelEl?.contains(clickedElement);
+      const isInsideSettingsPanel = settingsPanelEl?.contains(clickedElement);
+      const isThemeButton = themeBtn?.contains(clickedElement);
+      const isTimezoneButton = timezoneBtn?.contains(clickedElement);
+      const isSettingsButton = settingsBtn?.contains(clickedElement);
+
+      if (
+        this.timezonePanelVisible &&
+        !isInsideTimezonePanel &&
+        !isTimezoneButton
+      ) {
+        this.toggleTimezonePanel();
+      }
+
+      if (this.themePanelVisible && !isInsideThemePanel && !isThemeButton) {
+        this.toggleThemePanel();
+      }
+
+      if (this.settingsVisible && !isInsideSettingsPanel && !isSettingsButton) {
+        this.toggleSettings(false);
+      }
+    });
+  }
+
   updateClock() {
-    const now = new Date();
+    const now = this.getCurrentTime();
     const hours = now.getHours();
     const minutes = now.getMinutes();
     const seconds = now.getSeconds();
@@ -482,6 +597,94 @@ class EnhancedThemeableClock {
 
     this.updateAnalogClock(hours, minutes, seconds, now.getMilliseconds());
     this.updateDigitalDisplay(hours, minutes, seconds);
+  }
+
+  getCurrentTime() {
+    if (this.currentTimezone === "local") {
+      return new Date();
+    }
+
+    try {
+      const localTime = new Date();
+      const tzString = localTime.toLocaleString("en-US", {
+        timeZone: this.currentTimezone,
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+
+      const [datePart, timePart] = tzString.split(", ");
+      const [month, day, year] = datePart.split("/");
+      const [hours, minutes, seconds] = timePart.split(":");
+      return new Date(
+        year,
+        month - 1,
+        day,
+        hours,
+        minutes,
+        seconds,
+        localTime.getMilliseconds()
+      );
+    } catch (error) {
+      console.error("Timezone conversion error:", error);
+      return new Date();
+    }
+  }
+
+  changeTimezone(timezone) {
+    this.currentTimezone = timezone;
+    const select = document.getElementById("timezoneSelect");
+    if (select) select.value = timezone;
+    const zoneName =
+      timezone === "local"
+        ? "Local Time"
+        : timezone.replace("_", " ").replace("/", " - ");
+    const offset = this.getTimezoneOffsetString(timezone);
+    const nameElement = document.getElementById("currentZoneName");
+    const offsetElement = document.getElementById("utcOffset");
+    if (nameElement) nameElement.textContent = zoneName;
+    if (offsetElement) offsetElement.textContent = `UTC ${offset}`;
+    this.updateClock();
+    this.updateDate();
+    localStorage.setItem("orizon-timezone", timezone);
+    console.log(`🌍 Timezone changed to: ${zoneName} (${offset})`);
+  }
+
+  getTimezoneOffsetString(timezone) {
+    if (timezone === "local") {
+      const offset = -new Date().getTimezoneOffset();
+      const hours = Math.floor(Math.abs(offset) / 60);
+      const minutes = Math.abs(offset) % 60;
+      const sign = offset >= 0 ? "+" : "-";
+      return `${sign}${String(hours).padStart(2, "0")}:${String(
+        minutes
+      ).padStart(2, "0")}`;
+    }
+
+    try {
+      const now = new Date();
+      const utcDate = new Date(
+        now.toLocaleString("en-US", { timeZone: "UTC" })
+      );
+      const tzDate = new Date(
+        now.toLocaleString("en-US", { timeZone: timezone })
+      );
+      const offsetMinutes = Math.round((tzDate - utcDate) / 60000);
+      const hours = Math.floor(Math.abs(offsetMinutes) / 60);
+      const minutes = Math.abs(offsetMinutes) % 60;
+      const sign = offsetMinutes >= 0 ? "+" : "-";
+
+      return `${sign}${String(hours).padStart(2, "0")}:${String(
+        minutes
+      ).padStart(2, "0")}`;
+    } catch (error) {
+      console.error("Offset calculation error:", error);
+      return "+00:00";
+    }
   }
 
   updateAnalogClock(hours, minutes, seconds, milliseconds) {
@@ -938,7 +1141,6 @@ class EnhancedThemeableClock {
     } else {
       autoTheme = "midnight";
     }
-
     if (autoTheme !== this.currentTheme) {
       this.changeTheme(autoTheme);
     }
@@ -962,7 +1164,7 @@ class EnhancedThemeableClock {
   }
 
   updateDate() {
-    const now = new Date();
+    const now = this.getCurrentTime();
     const dateOptions = {
       weekday: "long",
       year: "numeric",

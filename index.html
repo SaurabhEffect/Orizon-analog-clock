@@ -3,18 +3,34 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ORIZON - Analog Clock v3.1</title>
+    <title>ORIZON v3.2 - Modular Architecture</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
-    <link rel="stylesheet" href="style.css" />
+
+    <!-- CSS Imports -->
+    <link rel="stylesheet" href="styles/theme-variables.css" />
+    <link rel="stylesheet" href="styles/base-styles.css" />
+    <link rel="stylesheet" href="components/Clock/Clock.css" />
+    <link
+      rel="stylesheet"
+      href="components/DigitalDisplay/DigitalDisplay.css"
+    />
+    <link rel="stylesheet" href="components/ThemePanel/ThemePanel.css" />
+    <link rel="stylesheet" href="components/SettingsPanel/SettingsPanel.css" />
+    <link rel="stylesheet" href="components/TimezonePanel/TimezonePanel.css" />
+    <link rel="stylesheet" href="components/ControlPanel/ControlPanel.css" />
+    <link rel="stylesheet" href="components/DateDisplay/DateDisplay.css" />
+    <link rel="stylesheet" href="styles/responsive.css" />
   </head>
+
   <body>
     <div class="left-panel-container">
       <div class="settings-panel" id="themePanel">
@@ -300,7 +316,7 @@
         </div>
       </div>
 
-      <div class="settings-panel" id="settingsPanel">
+      <div class="panel settings-panel" id="settingsPanel">
         <div class="settings-header">
           <h3><i class="fa-solid fa-gear"></i> Settings</h3>
           <button class="close-btn" id="closeSettings">
@@ -381,7 +397,7 @@
               <div class="date-text">Loading...</div>
               <div class="day-text">Today is...</div>
             </div>
-            <div class="version-badge">v3.1</div>
+            <div class="version-badge">v3.2</div>
           </div>
           <div class="digital-display" id="digitalDisplay">
             <div class="digital-time" id="digitalTime">
@@ -459,6 +475,27 @@
       style="display: none"
     />
 
-    <script src="script.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.40/Tone.js"></script>
+    <script src="utils/EventEmitter.js"></script>
+    <script src="utils/StorageManager.js"></script>
+    <script src="utils/TimeUtils.js"></script>
+    <script src="utils/AudioManager.js"></script>
+    <script src="components/Clock/Clock.js"></script>
+    <script src="components/DigitalDisplay/DigitalDisplay.js"></script>
+    <script src="components/ThemePanel/ThemePanel.js"></script>
+    <script src="components/SettingsPanel/SettingsPanel.js"></script>
+    <script src="components/TimezonePanel/TimezonePanel.js"></script>
+    <script src="components/ControlPanel/ControlPanel.js"></script>
+    <script src="components/DateDisplay/DateDisplay.js"></script>
+
+    <!-- Main Application -->
+    <script src="js/App.js"></script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const app = new ClockApp();
+        app.init();
+      });
+    </script>
   </body>
 </html>

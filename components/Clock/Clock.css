@@ -1,0 +1,331 @@
+/* Clock Component Styles */
+
+:root {
+  --bg-primary: linear-gradient(135deg, #2e3440 0%, #3b4252 100%);
+  --bg-secondary: rgba(216, 222, 233, 0.05);
+  --bg-glass: rgba(76, 86, 106, 0.5);
+  --bg-glass-hover: rgba(76, 86, 106, 0.7);
+  --text-primary: #eceff4;
+  --text-secondary: #d8dee9;
+  --text-accent: #a3b6cc;
+  --accent-color: #88c0d0;
+  --accent-secondary: #bf616a;
+  --accent-green: #a3be8c;
+  --accent-purple: #b48ead;
+  --shadow-light: rgba(236, 239, 244, 0.1);
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  --border-glass: rgba(236, 239, 244, 0.15);
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --theme-transition: all 0.4s var(--animation-smooth);
+  --bg-glass-color: #4c566a;
+  --glass-opacity: 0.5;
+  --hour-hand-color: #eceff4;
+  --minute-hand-color: #d8dee9;
+  --second-hand-color: #bf616a;
+  --center-dot-color: #bf616a;
+}
+
+.clock {
+  width: 340px;
+  height: 340px;
+  position: relative;
+  animation: clockAppear 1.2s var(--animation-bounce) 0.3s both;
+}
+
+@keyframes clockAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-10deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.clock-face {
+  width: 100%;
+  height: 100%;
+  background: var(--bg-glass);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid var(--border-glass);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 60px var(--shadow-dark),
+    inset 0 1px 1px var(--shadow-light), inset 0 -1px 1px var(--shadow-dark);
+  transition: all 0.3s var(--animation-smooth);
+}
+
+.clock-face:hover {
+  transform: scale(1.02);
+  box-shadow: 0 25px 80px var(--shadow-dark),
+    inset 0 1px 2px var(--shadow-light), inset 0 -1px 2px var(--shadow-dark);
+}
+
+.hour-markers {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -17.5px;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-primary);
+  transform-origin: center;
+  border-radius: 50%;
+  transition: transform 0.4s var(--animation-bounce), color 0.3s ease,
+    background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.marker:hover {
+  background: color-mix(in srgb, var(--accent-color) 20%, transparent);
+  color: var(--accent-color);
+  transform: rotate(var(--rotation)) translateY(-145px) scale(1.2);
+  box-shadow: 0 0 20px 0
+    color-mix(in srgb, var(--accent-color) 50%, transparent);
+  z-index: 100;
+}
+
+.marker span {
+  transition: transform 0.4s var(--animation-bounce);
+  transform: rotate(calc(var(--rotation) * -1));
+}
+
+.marker:hover span {
+  transform: rotate(0deg);
+}
+
+.hour-12 {
+  --rotation: 0deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-1 {
+  --rotation: 30deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-2 {
+  --rotation: 60deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-3 {
+  --rotation: 90deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-4 {
+  --rotation: 120deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-5 {
+  --rotation: 150deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-6 {
+  --rotation: 180deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-7 {
+  --rotation: 210deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-8 {
+  --rotation: 240deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-9 {
+  --rotation: 270deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-10 {
+  --rotation: 300deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hour-11 {
+  --rotation: 330deg;
+  transform: rotate(var(--rotation)) translateY(-145px);
+}
+
+.hand {
+  position: absolute;
+  left: 50%;
+  bottom: 50%;
+  transform-origin: bottom center;
+  box-shadow: 0 2px 8px var(--shadow-dark);
+}
+
+.hour-hand {
+  width: 7px;
+  height: 90px;
+  background: var(--hour-hand-color);
+  margin-left: -3.5px;
+  border-radius: 10px;
+  z-index: 6;
+}
+
+.minute-hand {
+  width: 5px;
+  height: 120px;
+  background: var(--minute-hand-color);
+  margin-left: -2.5px;
+  border-radius: 10px;
+  z-index: 7;
+}
+
+.second-hand {
+  width: 3px;
+  height: 130px;
+  background: var(--second-hand-color);
+  margin-left: -1.5px;
+  z-index: 8;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px
+    color-mix(in srgb, var(--second-hand-color) 50%, transparent);
+}
+
+.center-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  background: var(--center-dot-color);
+  border: 3px solid var(--bg-glass);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  box-shadow: 0 0 0 2px var(--accent-color), 0 4px 10px var(--shadow-dark);
+}
+
+.brand-logo {
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-accent);
+  letter-spacing: 3px;
+  transition: color 0.3s ease;
+  z-index: 5;
+}
+
+.date-wrapper {
+  position: relative;
+}
+
+.version-badge {
+  position: absolute;
+  top: -12px;
+  right: -40px;
+  background: var(--accent-purple);
+  color: white;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  border: 2px solid var(--bg-primary);
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+body.is-fullscreen .clock {
+  width: 420px;
+  height: 420px;
+  transition: all 0.5s var(--animation-smooth);
+}
+
+body.is-fullscreen .marker {
+  transform: rotate(var(--rotation)) translateY(-180px);
+}
+
+body.is-fullscreen .marker:hover {
+  transform: rotate(var(--rotation)) translateY(-180px) scale(1.2);
+}
+
+@media (max-width: 768px) {
+  .clock {
+    width: 300px;
+    height: 300px;
+  }
+
+  .marker {
+    font-size: 1rem;
+  }
+
+  body.is-fullscreen .clock {
+    width: 60vmin;
+    height: 60vmin;
+  }
+
+  body.is-fullscreen .marker {
+    transform: rotate(var(--rotation)) translateY(-26vmin);
+  }
+
+  body.is-fullscreen .marker:hover {
+    transform: rotate(var(--rotation)) translateY(-26vmin) scale(1.2);
+  }
+}
+
+@media (max-width: 480px) {
+  .clock {
+    width: calc(100vw - 60px);
+    height: calc(100vw - 60px);
+  }
+
+  .hour-hand {
+    height: 70px;
+  }
+
+  .minute-hand {
+    height: 100px;
+  }
+
+  .second-hand {
+    height: 110px;
+  }
+
+  .marker {
+    margin: -16px;
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
+  }
+
+  .brand-logo {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+  }
+
+  .version-badge {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+}

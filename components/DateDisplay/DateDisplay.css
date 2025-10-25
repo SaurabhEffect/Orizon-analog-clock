@@ -1,0 +1,89 @@
+/* Date Display Component Styles */
+
+:root {
+  --bg-primary: linear-gradient(135deg, #2e3440 0%, #3b4252 100%);
+  --bg-secondary: rgba(216, 222, 233, 0.05);
+  --bg-glass: rgba(76, 86, 106, 0.5);
+  --bg-glass-hover: rgba(76, 86, 106, 0.7);
+  --text-primary: #eceff4;
+  --text-secondary: #d8dee9;
+  --text-accent: #a3b6cc;
+  --accent-color: #88c0d0;
+  --accent-secondary: #bf616a;
+  --accent-green: #a3be8c;
+  --accent-purple: #b48ead;
+  --shadow-light: rgba(236, 239, 244, 0.1);
+  --shadow-dark: rgba(0, 0, 0, 0.3);
+  --border-glass: rgba(236, 239, 244, 0.15);
+  --animation-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --theme-transition: all 0.4s var(--animation-smooth);
+  --bg-glass-color: #4c566a;
+  --glass-opacity: 0.5;
+  --hour-hand-color: #eceff4;
+  --minute-hand-color: #d8dee9;
+  --second-hand-color: #bf616a;
+  --center-dot-color: #bf616a;
+}
+
+.date-display {
+  position: relative;
+  text-align: center;
+  background: var(--bg-glass);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 15px 25px;
+  box-shadow: 0 4px 15px var(--shadow-dark);
+  transition: all 0.3s var(--animation-smooth);
+}
+
+.date-display:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px var(--shadow-dark);
+}
+
+.date-text {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  transition: color 0.3s ease;
+}
+
+.day-text {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .date-text {
+    font-size: var(--font-size-lg);
+  }
+
+  .day-text {
+    font-size: var(--font-size-xs);
+  }
+
+  .date-display {
+    padding: var(--space-12) var(--space-20);
+  }
+}
+
+@media (max-width: 480px) {
+  .date-text {
+    font-size: var(--font-size-base);
+  }
+
+  .day-text {
+    font-size: var(--font-size-xs);
+  }
+
+  .date-display {
+    padding: var(--space-10) var(--space-16);
+  }
+}

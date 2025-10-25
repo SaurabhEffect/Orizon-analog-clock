@@ -1,0 +1,356 @@
+/* ORIZON Clock v3.2 - Enhanced Responsive Styles */
+
+@media (max-width: 768px) {
+  .clock {
+    width: 300px;
+    height: 300px;
+  }
+
+  .sidebar-area {
+    top: 16px;
+    right: 16px;
+  }
+
+  .control-btn {
+    padding: 8px 12px;
+  }
+
+  .btn-text {
+    display: none;
+  }
+
+  .settings-panel,
+  .theme-panel,
+  .timezone-panel {
+    width: 280px;
+    max-height: 70vh;
+  }
+
+  .theme-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .left-panel-container {
+    left: 10px;
+  }
+
+  .marker {
+    font-size: 1rem;
+  }
+
+  .date-text {
+    font-size: 1.125rem;
+  }
+
+  .digital-time {
+    font-size: 3rem;
+  }
+
+  body.is-fullscreen .clock {
+    width: 60vmin;
+    height: 60vmin;
+  }
+
+  body.is-fullscreen .marker {
+    transform: rotate(var(--rotation)) translateY(-26vmin);
+  }
+
+  body.is-fullscreen .marker:hover {
+    transform: rotate(var(--rotation)) translateY(-26vmin) scale(1.2);
+  }
+
+  .control-btn {
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .clock {
+    width: calc(100vw - 60px);
+    height: calc(100vw - 60px);
+    max-width: 320px;
+    max-height: 320px;
+  }
+
+  .hour-hand {
+    height: 70px;
+  }
+
+  .minute-hand {
+    height: 100px;
+  }
+
+  .second-hand {
+    height: 110px;
+  }
+
+  .marker {
+    font-size: 0.875rem;
+    width: 32px;
+    height: 32px;
+  }
+
+  .date-text {
+    font-size: 1rem;
+  }
+
+  .day-text {
+    font-size: 0.75rem;
+  }
+
+  .digital-time {
+    font-size: 2rem;
+  }
+
+  .time-hours,
+  .time-minutes,
+  .time-seconds {
+    min-width: 38px;
+  }
+
+  .settings-panel,
+  .theme-panel,
+  .timezone-panel {
+    width: 250px;
+    max-height: 65vh;
+  }
+
+  .left-panel-container {
+    left: 10px;
+    top: 16px;
+  }
+
+  .theme-builder-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .color-presets {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .city-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .theme-name-section {
+    flex-direction: column;
+  }
+
+  .preference-item {
+    font-size: 0.875rem !important;
+  }
+
+  .brand-logo {
+    font-size: 0.75rem;
+  }
+
+  button,
+  .control-btn,
+  .theme-option,
+  .city-button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .settings-panel,
+  .theme-panel,
+  .timezone-panel {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 360px) {
+  .clock {
+    width: calc(100vw - 40px);
+    height: calc(100vw - 40px);
+  }
+
+  .settings-panel,
+  .theme-panel,
+  .timezone-panel {
+    width: calc(100vw - 40px);
+  }
+
+  .control-btn {
+    padding: 6px 10px;
+  }
+
+  .btn-icon {
+    font-size: 0.875rem;
+  }
+
+  .brand-logo {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) and (orientation: landscape) {
+  .clock-container {
+    min-height: auto;
+    padding: 10px 0;
+  }
+
+  .clock {
+    width: 280px;
+    height: 280px;
+  }
+
+  .main-clock-area {
+    gap: 10px;
+  }
+
+  .settings-panel,
+  .theme-panel,
+  .timezone-panel {
+    max-height: 80vh;
+  }
+
+  .date-display {
+    padding: 10px 20px;
+  }
+
+  .clock-container {
+    flex-direction: row;
+    gap: 20px;
+  }
+}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .clock-face {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+  }
+
+  .settings-panel,
+  .theme-panel,
+  .timezone-panel {
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+  }
+
+  * {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg-primary: linear-gradient(135deg, #2e3440, #3b4252);
+    --text-primary: #eceff4;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg-primary: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    --text-primary: #212529;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .control-btn:hover,
+  .theme-option:hover,
+  .city-button:hover {
+    transform: none;
+  }
+
+  .control-btn:active,
+  .theme-option:active,
+  .city-button:active {
+    transform: scale(0.95);
+  }
+
+  button,
+  a,
+  .control-btn {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  * {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  input,
+  textarea {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+}
+
+@media (horizontal-viewport-segments: 2) {
+  .clock-container {
+    display: grid;
+    grid-template-columns: env(viewport-segment-width 0 0) env(
+        viewport-segment-width 1 0
+      );
+    gap: env(viewport-segment-left 1 0);
+  }
+}
+
+@media print and (max-width: 480px) {
+  .clock {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .left-panel-container,
+  .sidebar-area {
+    display: none;
+  }
+
+  * {
+    color: black !important;
+    background: white !important;
+  }
+}
+
+@supports (padding: max(0px)) {
+  @media (max-width: 768px) {
+    .left-panel-container {
+      left: max(10px, env(safe-area-inset-left));
+      top: max(16px, env(safe-area-inset-top));
+    }
+
+    .sidebar-area {
+      right: max(16px, env(safe-area-inset-right));
+      top: max(16px, env(safe-area-inset-top));
+    }
+
+    .settings-panel,
+    .theme-panel,
+    .timezone-panel {
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+    }
+  }
+}
+
+@supports (container-type: inline-size) {
+  .clock-container {
+    container-type: inline-size;
+  }
+
+  @container (max-width: 480px) {
+    .clock {
+      width: 90%;
+      height: 90%;
+    }
+  }
+}

@@ -1,0 +1,237 @@
+/* Settings Panel Component Styles */
+
+.settings-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 320px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 15px 40px var(--shadow-dark);
+  opacity: 0;
+  transform: translateX(-30px) scale(0.95);
+  transition: all 0.3s var(--animation-smooth);
+  pointer-events: none;
+  z-index: 90;
+}
+
+.settings-panel.show {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.settings-header h3 {
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-btn:hover {
+  color: var(--accent-secondary);
+  transform: scale(1.1);
+}
+
+.settings-content label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preferences {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.preference-section h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid var(--border-glass);
+}
+
+.preference-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13px !important;
+  margin-bottom: 8px !important;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.preference-item:hover {
+  background: var(--bg-secondary);
+}
+
+.preference-item input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent-color);
+}
+
+.preference-icon {
+  margin-left: auto;
+  color: var(--text-accent);
+  font-size: 12px;
+}
+
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+#volumeSlider {
+  flex: 1;
+  height: 4px;
+}
+
+#volumeValue {
+  min-width: 35px;
+  text-align: right;
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+.settings-divider {
+  height: 1px;
+  background: var(--border-glass);
+  margin: 20px 0;
+}
+
+.settings-panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.settings-panel::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+  border-radius: 3px;
+}
+
+.settings-panel::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 3px;
+}
+
+.settings-panel::-webkit-scrollbar-thumb:hover {
+  background: color-mix(
+    in srgb,
+    var(--accent-color) 80%,
+    var(--text-primary) 20%
+  );
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .settings-panel {
+    width: 280px;
+    padding: var(--space-16);
+  }
+
+  .settings-header {
+    margin-bottom: var(--space-12);
+    padding-bottom: var(--space-12);
+  }
+
+  .settings-header h3 {
+    font-size: var(--font-size-base);
+  }
+
+  .preferences {
+    gap: var(--space-16);
+  }
+}
+
+@media (max-width: 480px) {
+  .settings-panel {
+    width: 250px;
+    max-height: 70vh;
+    padding: var(--space-12);
+    border-radius: var(--radius-base);
+  }
+
+  .settings-header {
+    margin-bottom: var(--space-10);
+    padding-bottom: var(--space-10);
+  }
+
+  .settings-header h3 {
+    font-size: var(--font-size-base);
+  }
+
+  .close-btn {
+    font-size: var(--font-size-2xl);
+    padding: var(--space-2);
+  }
+
+  .preference-item {
+    font-size: var(--font-size-xs) !important;
+    padding: var(--space-6);
+    gap: var(--space-8);
+  }
+
+  .preference-section h4 {
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-8);
+  }
+
+  .volume-control {
+    padding: var(--space-6);
+    gap: var(--space-8);
+    font-size: var(--font-size-xs);
+  }
+
+  .settings-content label {
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-8);
+  }
+
+  .preferences {
+    gap: var(--space-12);
+  }
+
+  .settings-divider {
+    margin: var(--space-16) 0;
+  }
+}

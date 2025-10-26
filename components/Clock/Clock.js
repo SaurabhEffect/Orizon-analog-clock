@@ -5,21 +5,28 @@ class ClockComponent {
     this.container = container;
     this.eventEmitter = eventEmitter;
     this.currentTime = new Date();
-    this.previousSecond = -1;
     this.powerSaver = false;
-    this.cumulativeSecondRotation = 0;
-    this.cumulativeMinuteRotation = 0;
-    this.cumulativeHourRotation = 0;
     this.hourHand = null;
     this.minuteHand = null;
     this.secondHand = null;
+    this.lastRaw = {
+      hour: -1,
+      minute: -1,
+      second: -1,
+    };
+    this.cumulativeRotation = {
+      hour: 0,
+      minute: 0,
+      second: 0,
+    };
     this.init();
     this.setupEventListeners();
   }
 
   init() {
     this.cacheElements();
-    this.update();
+    this.currentTime = TimeUtils.getCurrentTime("local");
+    this.update(true);
   }
 
   cacheElements() {
@@ -31,7 +38,7 @@ class ClockComponent {
   setupEventListeners() {
     this.eventEmitter.on("timeUpdate", (time, timezone) => {
       this.currentTime = time;
-      this.update();
+      this.update(false);
     });
 
     this.eventEmitter.on("themeChanged", () => {
@@ -40,32 +47,66 @@ class ClockComponent {
 
     this.eventEmitter.on("powerSaverChanged", (enabled) => {
       this.powerSaver = enabled;
+      this.setHandTransition(this.hourHand, false);
+      this.setHandTransition(this.minuteHand, false);
+      this.setHandTransition(this.secondHand, false);
     });
   }
 
-  update() {
-    const angles = TimeUtils.calculateHandAngles(this.currentTime);
-    const seconds = this.currentTime.getSeconds();
-    if (this.secondHand) {
-      if (seconds !== this.previousSecond) {
-        if (this.previousSecond === 59 && seconds === 0) {
-          this.cumulativeSecondRotation += 360;
-          console.log("⏰ Second hand completed full rotation, continuing...");
-        }
-        this.secondHand.style.transition = this.powerSaver
-          ? "none"
-          : "transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)";
-      }
+  update(isInitialUpdate = false) {
+    if (!this.currentTime) return;
+    const newAngles = TimeUtils.calculateHandAngles(this.currentTime);
+    const newRaw = {
+      hour: this.currentTime.getHours(),
+      minute: this.currentTime.getMinutes(),
+      second: this.currentTime.getSeconds(),
+    };
+
+    if (this.lastRaw.second !== -1 && newRaw.second < this.lastRaw.second) {
+      this.cumulativeRotation.second += 360;
+      console.log("⏰ Second hand full rotation");
+    }
+    if (this.lastRaw.minute !== -1 && newRaw.minute < this.lastRaw.minute) {
+      this.cumulativeRotation.minute += 360;
+    }
+    if (this.lastRaw.hour !== -1 && newRaw.hour < this.lastRaw.hour) {
+      this.cumulativeRotation.hour += 360;
     }
 
-    const continuousSecondAngle = this.cumulativeSecondRotation + angles.second;
-    const continuousMinuteAngle = this.cumulativeMinuteRotation + angles.minute;
-    const continuousHourAngle = this.cumulativeHourRotation + angles.hour;
+    // Last raw values update karein
+    this.lastRaw = newRaw;
+
+    // Final angles calculate karein
+    const continuousHourAngle = this.cumulativeRotation.hour + newAngles.hour;
+    const continuousMinuteAngle =
+      this.cumulativeRotation.minute + newAngles.minute;
+    const continuousSecondAngle =
+      this.cumulativeRotation.second + newAngles.second;
+
+    this.setHandTransition(this.hourHand, isInitialUpdate);
+    this.setHandTransition(this.minuteHand, isInitialUpdate);
+    this.setHandTransition(this.secondHand, isInitialUpdate);
 
     this.updateHand(this.hourHand, continuousHourAngle);
     this.updateHand(this.minuteHand, continuousMinuteAngle);
     this.updateHand(this.secondHand, continuousSecondAngle);
-    this.previousSecond = seconds;
+  }
+
+  setHandTransition(hand, isInitial) {
+    if (!hand) return;
+    if (isInitial) {
+      hand.style.transition = "none";
+      return;
+    }
+    if (this.powerSaver) {
+      hand.style.transition = "none";
+    } else {
+      if (hand === this.secondHand) {
+        hand.style.transition = "transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1)";
+      } else {
+        hand.style.transition = "transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)";
+      }
+    }
   }
 
   updateTheme() {

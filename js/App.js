@@ -38,6 +38,11 @@ class ClockApp {
     setTimeout(() => {
       this.eventEmitter.emit("themeApplied", this.state.currentTheme);
     }, 200);
+    if (this.state.autoTheme) {
+      console.log("AutoTheme enabled on load. Applying...");
+      this.applyAutoTheme();
+      this.startAutoThemeInterval();
+    }
     this.setupKeyboardShortcuts();
     this.enableWakeLock();
     this.initCursorAutoHide();
@@ -109,7 +114,7 @@ class ClockApp {
     this.eventEmitter.on("toggleFullscreen", () => this.toggleFullscreen());
     this.eventEmitter.on("themeChanged", (theme) => {
       console.log("App received theme change request:", theme);
-      this.changeTheme(theme);
+      this.changeTheme(theme, false);
     });
     this.eventEmitter.on("timezoneChanged", (timezone) =>
       this.changeTimezone(timezone)
@@ -275,10 +280,16 @@ class ClockApp {
     }
   }
 
-  changeTheme(themeName) {
+  changeTheme(themeName, isAutomatic = false) {
     if (this.state.currentTheme === themeName) {
       console.log("Theme is already", themeName, "- skipping change");
       return;
+    }
+    if (this.state.autoTheme && !isAutomatic) {
+      console.log("Manual theme change detected. Disabling auto-theme.");
+      this.state.autoTheme = false;
+      this.stopAutoThemeInterval();
+      this.eventEmitter.emit("updateSettingUI", "autoTheme", false);
     }
     this.state.currentTheme = themeName;
     this.applyTheme(themeName);
@@ -320,6 +331,46 @@ class ClockApp {
     this.eventEmitter.emit("themeChanged", nextTheme);
   }
 
+  applyAutoTheme() {
+    if (!this.state.autoTheme) {
+      this.stopAutoThemeInterval();
+      return;
+    }
+    console.log("Checking for auto-theme change...");
+    const hour = new Date().getHours();
+    let autoTheme;
+    if (hour >= 6 && hour < 12) {
+      autoTheme = "light";
+    } else if (hour >= 12 && hour < 18) {
+      autoTheme = "sunset";
+    } else if (hour >= 18 && hour < 22) {
+      autoTheme = "dark";
+    } else {
+      autoTheme = "midnight";
+    }
+
+    if (autoTheme !== this.state.currentTheme) {
+      console.log(`Auto-applying theme: ${autoTheme}`);
+      this.changeTheme(autoTheme, true);
+    }
+  }
+
+  startAutoThemeInterval() {
+    this.stopAutoThemeInterval();
+    this.autoThemeInterval = setInterval(() => {
+      this.applyAutoTheme();
+    }, 3600000);
+    console.log("AutoTheme interval started (checks every hour).");
+  }
+
+  stopAutoThemeInterval() {
+    if (this.autoThemeInterval) {
+      clearInterval(this.autoThemeInterval);
+      this.autoThemeInterval = null;
+      console.log("AutoTheme interval stopped.");
+    }
+  }
+
   changeTimezone(timezone) {
     this.state.timezone = timezone;
     if (this.animationFrameId) {
@@ -346,6 +397,16 @@ class ClockApp {
         break;
       case "showSeconds":
         this.eventEmitter.emit("showSecondsChanged", value);
+        break;
+      case "autoTheme":
+        if (value) {
+          console.log("AutoTheme toggled ON");
+          this.applyAutoTheme();
+          this.startAutoThemeInterval();
+        } else {
+          console.log("AutoTheme toggled OFF");
+          this.stopAutoThemeInterval();
+        }
         break;
     }
     this.savePreferences();

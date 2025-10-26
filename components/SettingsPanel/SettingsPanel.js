@@ -32,6 +32,16 @@ class SettingsPanelComponent {
     this.panel = this.container;
     this.volumeSlider = document.getElementById("volumeSlider");
     this.volumeValue = document.getElementById("volumeValue");
+    this.eventEmitter.on("updateSettingUI", (setting, value) => {
+      console.log(`SettingsPanel received UI update for ${setting}: ${value}`);
+      if (setting === "autoTheme") {
+        const autoThemeCheckbox = document.getElementById("autoTheme");
+        if (autoThemeCheckbox) {
+          autoThemeCheckbox.checked = value;
+          this.settings.autoTheme = value;
+        }
+      }
+    });
   }
 
   setupEventListeners() {

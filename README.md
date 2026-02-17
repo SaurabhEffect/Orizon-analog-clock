@@ -1,6 +1,6 @@
 # ORIZON Clock v3.2 - Advanced Modular Analog Clock
 
-> **ORIZON** is a sophisticated, fully-featured analog clock application with advanced theming, modular architecture, and rich customization options. Built with vanilla JavaScript using modern component-based patterns.
+> **ORIZON** is a sophisticated, fully-featured analog clock application with advanced theming, modular architecture, and rich customization options. Built with vanilla JavaScript using modern component based patterns.
 
 ![HTML5](https://img.shields.io/badge/Built%20with-HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
@@ -16,9 +16,9 @@
 ![Design](https://img.shields.io/badge/Design-Nordic_Minimalist-blue)
 ![Status](https://img.shields.io/badge/Status-Production_Ready-success)
 
-## 🎯 What's New in v3.2?
+## What's New in v3.2?
 
-### 🔄 **Modular Architecture**
+### **Modular Architecture**
 
 - **Component-Based Structure** - Each component in its own file
 - **Separation of Concerns** - Logic, styling, and utilities separated
@@ -26,28 +26,26 @@
 - **Easy Maintenance** - Update individual components without affecting others
 - **Scalability** - Add new features or components easily
 
-### ✨ **Key Improvements Over v3.1**
+### **Key Improvements Over v3.1**
 
 | Feature           | v3.1            | v3.2                          |
 | ----------------- | --------------- | ----------------------------- |
 | Architecture      | Monolithic      | Modular Components            |
 | Code Organization | Single files    | Separate JS/CSS per component |
-| Component Count   | ~3              | 7+ optimized components       |
-| Utilities         | Embedded        | Dedicated utils folder        |
 | UX Enhancement    | Basic           | Smart panel toggle system     |
 | Clock Movement    | Fixed animation | Continuous smooth rotation    |
 | Panel Management  | Manual          | State-tracked management      |
 
 ---
 
-## 📁 **Project Structure (v3.2)**
+## **Project Structure (v3.2)**
 
 ```
 ORIZON-Clock-v3.2/
 │
-├── 📄 index.html                 # Main HTML entry point
+├── index.html                 # Main HTML entry point
 │
-├── 📂 components/                # UI Components (Modular)
+├── components/                # UI Components (Modular)
 │   ├── Clock
 |   |   ├── Clock.css
 |   |   └── Clock.js
@@ -76,33 +74,33 @@ ORIZON-Clock-v3.2/
 |       ├── TimezonePanel.css
 |       └── TimezonePanel.js
 │
-├── 📂 utils/                     # Utility Classes (Optimized)
+├── utils/                        # Utility Classes (Optimized)
 │   ├── EventEmitter.js           # Event management
 │   ├── StorageManager.js         # Local storage
 │   ├── TimeUtils.js              # Time calculations
 │   └── AudioManager.js           # Sound management
 │
-├── 📂 styles/                    # Global Styles
+├── styles/                       # Global Styles
 │   ├── base-styles.css           # Base styling
 │   ├── responsive.css            # Responsive breakpoints
 │   └── theme-variables.css       # Dynamic theme system
 |
-├── 📂js/
-|   └── App.js                    #Main JS file
+├── js/
+|   └── App.js                    # Main JS file
 |
-├── 📂 docs/                      # Documentation
+├── docs/                         # Documentation
 │   ├── COMPONENTS.md             # Component documentation
 │   ├── ARCHITECTURE.md           # Architecture guide
 │   ├── KEYBOARD_SHORTCUTS.md     # Keyboard guide
 │   └── INSTALLATION.md           # Setup instructions
 │
-├── 📄 README.md                  # This file
-└── 📄 CHANGELOG.md               # Version history
+├── README.md                  # This file
+└── CHANGELOG.md               # Version history
 ```
 
 ---
 
-## 🚀 **Quick Start**
+## **Quick Start**
 
 ### Option 1: Direct Browser
 
@@ -125,9 +123,9 @@ npx http-server
 
 ---
 
-## ✨ **Features**
+## **Features**
 
-### 🎨 **Theming System**
+### **Theming System**
 
 - 6+ Pre-built Themes (Dark, Light, Midnight, Sunset, Ocean, Forest)
 - Custom Theme Builder
@@ -135,7 +133,7 @@ npx http-server
 - Theme Import/Export
 - Persistent Theme Storage
 
-### 🕐 **Clock Display**
+### **Clock Display**
 
 - Analog Clock with Smooth Animations
 - Digital Time Display (12/24 hour)
@@ -143,7 +141,7 @@ npx http-server
 - Continuous Second Hand Rotation
 - Multiple Timezone Support
 
-### 🎛️ **Control Panel**
+### **Control Panel**
 
 - Theme Switcher
 - Digital Display Toggle
@@ -151,7 +149,7 @@ npx http-server
 - Settings Manager
 - Keyboard Shortcuts (T, S, Z, D, F, A, Q, ESC)
 
-### ⚙️ **Settings**
+### **Settings**
 
 - Hourly Chime Control
 - Tick Sound Toggle
@@ -161,14 +159,14 @@ npx http-server
 - Power Saver Mode
 - Volume Control
 
-### 🌍 **Timezone Management**
+### **Timezone Management**
 
 - 20+ Pre-configured Cities
 - Quick City Selection
 - Custom Timezone Support
 - UTC Offset Display
 
-### 🎯 **UX Enhancements**
+### **UX Enhancements**
 
 - Smart Panel Toggle (Press key twice to close)
 - Panel State Tracking
@@ -179,7 +177,7 @@ npx http-server
 
 ---
 
-## 🎮 **Keyboard Shortcuts**
+## **Keyboard Shortcuts**
 
 | Key     | Action                 |
 | ------- | ---------------------- |
@@ -196,7 +194,7 @@ Press the same key again to close the panel!
 
 ---
 
-## 🎨 **Themes**
+## **Themes**
 
 ### Pre-built Themes:
 
@@ -219,7 +217,7 @@ Press the same key again to close the panel!
 
 ---
 
-## 📊 **Technical Stack**
+## **Technical Stack**
 
 | Layer         | Technology                      |
 | ------------- | ------------------------------- |
@@ -234,7 +232,7 @@ Press the same key again to close the panel!
 
 ---
 
-## 🔄 **Component System**
+## **Component System**
 
 ### Architecture Pattern: **Event-Driven Components**
 
@@ -263,20 +261,7 @@ All Components (Independent)
 
 ---
 
-## 📚 **Documentation Files**
-
-This version includes comprehensive documentation:
-
-- **COMPONENTS.md** - Detailed component documentation
-- **ARCHITECTURE.md** - System design and patterns
-- **KEYBOARD_SHORTCUTS.md** - Input guide
-- **INSTALLATION.md** - Setup and deployment
-
-Each file has examples and detailed explanations!
-
----
-
-## 🔧 **Utilities Overview**
+## **Utilities Overview**
 
 ### **EventEmitter.js**
 
@@ -304,7 +289,7 @@ Each file has examples and detailed explanations!
 
 ---
 
-## 🎯 **Smart UX Features**
+## **Smart UX Features**
 
 ### Panel Toggle Logic:
 
@@ -329,37 +314,15 @@ User clicks outside → All panels close
 
 ---
 
-## 📱 **Browser Support**
-
-| Browser | Version | Status          |
-| ------- | ------- | --------------- |
-| Chrome  | 90+     | ✅ Full Support |
-| Firefox | 88+     | ✅ Full Support |
-| Safari  | 14+     | ✅ Full Support |
-| Edge    | 90+     | ✅ Full Support |
-| Mobile  | Modern  | ✅ Responsive   |
-
----
-
-## 🚀 **Performance**
-
-- **Optimized Rendering** - requestAnimationFrame for smooth animations
-- **Lazy Component Loading** - Components initialize on demand
-- **Efficient Event System** - Centralized event emitter
-- **Smart Updates** - Only update what changed
-- **Low Memory Footprint** - ~2-3MB unpacked
-
----
-
-## 📝 **Version History**
+## **Version History**
 
 ### v3.2 (Current)
 
-✅ **Modular Architecture** - Component-based structure
-✅ **Enhanced UX** - Smart panel toggle system
-✅ **Optimized Code** - Separated utilities
-✅ **Bug Fixes** - Continuous second hand movement
-✅ **New Docs** - Comprehensive documentation
+- **Modular Architecture** - Component-based structure
+- **Enhanced UX** - Smart panel toggle system
+- **Optimized Code** - Separated utilities
+- **Bug Fixes** - Continuous second hand movement
+- **New Docs** - Comprehensive documentation
 
 ### v3.1
 
@@ -374,7 +337,7 @@ User clicks outside → All panels close
 
 ---
 
-## 🤝 **Contributing**
+## **Contributing**
 
 Guidelines for contributors:
 
@@ -387,7 +350,7 @@ Guidelines for contributors:
 
 ---
 
-## 📄 License
+## License
 
 **Personal Project - Free to Use**
 
@@ -399,9 +362,9 @@ Guidelines for contributors:
 
 ---
 
-## 🎓 **Learning Resources**
+## **What I learnt **
 
-This project is great for learning:
+Learnt Following concepts:
 
 - Component-based architecture
 - Event-driven programming
@@ -409,27 +372,10 @@ This project is great for learning:
 - localStorage API
 - Web Audio API
 - Responsive design
-- Vanilla JavaScript best practices
 
 ---
 
-## 🐛 **Known Issues**
-
-None at this moment! Report any issues on GitHub.
-
----
-
-## 📞 **Support**
-
-For questions or issues:
-
-1. Check the **docs/** folder
-2. Review **ARCHITECTURE.md** for design patterns
-3. Open an issue on GitHub
-
----
-
-## 🎉 **Credits**
+## **Credits**
 
 **ORIZON Clock v3.2**
 

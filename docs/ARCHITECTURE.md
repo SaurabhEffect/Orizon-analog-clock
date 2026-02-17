@@ -6,7 +6,7 @@ ORIZON v3.2 follows a **modular, event-driven architecture** with clear separati
 
 ---
 
-## 🏗️ Architecture Layers
+## Architecture Layers
 
 ```
 ┌─────────────────────────────────────────┐
@@ -29,7 +29,7 @@ ORIZON v3.2 follows a **modular, event-driven architecture** with clear separati
 
 ---
 
-## 🔄 Data Flow
+## Data Flow
 
 ### Unidirectional Flow:
 
@@ -67,7 +67,7 @@ Components receive & update
 
 ---
 
-## 📦 Component Pattern
+## Component Pattern
 
 Each component follows standard pattern:
 
@@ -118,7 +118,7 @@ class ComponentName {
 
 ---
 
-## 🔌 EventEmitter Pattern
+## EventEmitter Pattern
 
 ### Central Message Bus:
 
@@ -152,7 +152,7 @@ this.eventEmitter.on("themeChanged", (theme) => {
 
 ---
 
-## 💾 State Management
+## State Management
 
 ### Central State in App.js:
 
@@ -187,7 +187,7 @@ this.openPanels = {
 
 ---
 
-## 🔐 Separation of Concerns
+## Separation of Concerns
 
 | Layer             | Responsibility                    |
 | ----------------- | --------------------------------- |
@@ -199,7 +199,7 @@ this.openPanels = {
 
 ---
 
-## 🛠️ Utility Classes
+## Utility Classes
 
 ### TimeUtils.js
 
@@ -238,7 +238,7 @@ off(event, callback); // Unsubscribe
 
 ---
 
-## 🎯 Smart Panel Management
+## Smart Panel Management
 
 ### State Tracking:
 
@@ -270,7 +270,7 @@ togglePanel(panelName) {
 
 ---
 
-## 🎨 Theming System
+## Theming System
 
 ### CSS Variables:
 
@@ -300,7 +300,7 @@ applyTheme(themeName) {
 
 ---
 
-## 🔄 Component Lifecycle
+## Component Lifecycle
 
 ### Initialization:
 
@@ -341,7 +341,7 @@ Window unload
 
 ---
 
-## 📡 Event Communication Map
+## Event Communication Map
 
 ```
 ControlPanel
@@ -368,7 +368,7 @@ Components
 
 ---
 
-## 🚀 Performance Considerations
+## Performance Considerations
 
 ### Optimization Techniques:
 
@@ -394,7 +394,6 @@ Components
    ```
 
 4. **Lazy Loading**
-
    - Components initialize only when needed
 
 5. **Efficient CSS**
@@ -403,7 +402,7 @@ Components
 
 ---
 
-## 🔐 Security Considerations
+## Security Considerations
 
 ### Input Validation:
 
@@ -418,10 +417,10 @@ if (!validTimezones.includes(timezone)) {
 
 ```javascript
 // Never use innerHTML
-element.innerHTML = userInput; // ❌ WRONG
+element.innerHTML = userInput; // WRONG
 
 // Use textContent or setAttribute
-element.textContent = userInput; // ✅ CORRECT
+element.textContent = userInput; // CORRECT
 ```
 
 ### localStorage Safety:
@@ -436,7 +435,7 @@ if (data && typeof data === "object") {
 
 ---
 
-## 🧪 Testing Strategy
+## Testing Strategy
 
 ### Unit Testing:
 
@@ -457,7 +456,7 @@ if (data && typeof data === "object") {
 
 ---
 
-## 📚 Design Patterns Used
+## Design Patterns Used
 
 | Pattern                  | Usage                                              |
 | ------------------------ | -------------------------------------------------- |
@@ -470,19 +469,17 @@ if (data && typeof data === "object") {
 
 ---
 
-## 🔄 Scalability
+## Scalability
 
 ### Adding New Features:
 
 1. **New Component**
-
    - Create ComponentName.js
    - Create ComponentName.css
    - Follow component pattern
    - Integrate in App.js
 
 2. **New Event**
-
    - App emits event
    - Components listen
    - State updates
@@ -494,7 +491,7 @@ if (data && typeof data === "object") {
 
 ---
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 - **Initial Load**: <1 second
 - **Animation**: 60 FPS
@@ -504,4 +501,4 @@ if (data && typeof data === "object") {
 ---
 
 **Version**: 3.2.0  
-**Architects**: Saurabh Chauhan
+**Architect**: Saurabh Chauhan

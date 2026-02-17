@@ -1,12 +1,12 @@
 # KEYBOARD SHORTCUTS & CONTROLS
 
-## ⌨️ Keyboard Shortcuts
+## Keyboard Shortcuts
 
 All keyboard shortcuts are available globally. Press any key below to control ORIZON Clock.
 
 ---
 
-## 🎮 Panel Controls
+## Panel Controls
 
 | Key     | Action                 | Description                                         |
 | ------- | ---------------------- | --------------------------------------------------- |
@@ -21,7 +21,7 @@ All keyboard shortcuts are available globally. Press any key below to control OR
 
 ---
 
-## 💡 Smart Toggle Behavior
+## Smart Toggle Behavior
 
 ### Single Press to Open
 
@@ -52,18 +52,18 @@ All keyboard shortcuts are available globally. Press any key below to control OR
 
 ---
 
-## 🖱️ Mouse Controls
+## Mouse Controls
 
 ### Menu Buttons (Sidebar)
 
-| Button            | Action                      | Hotkey |
-| ----------------- | --------------------------- | ------ |
-| 🖼️ **Digital**    | Toggle digital time display | D      |
-| 🎨 **Theme**      | Open theme panel            | T      |
-| ⚙️ **Settings**   | Open settings panel         | S      |
-| 🌍 **Timezone**   | Open timezone panel         | Z      |
-| 🔊 **Sound**      | Toggle audio on/off         | A      |
-| 🖥️ **Fullscreen** | Enter fullscreen mode       | F      |
+| Button         | Action                      | Hotkey |
+| -------------- | --------------------------- | ------ |
+| **Digital**    | Toggle digital time display | D      |
+| **Theme**      | Open theme panel            | T      |
+| **Settings**   | Open settings panel         | S      |
+| **Timezone**   | Open timezone panel         | Z      |
+| **Sound**      | Toggle audio on/off         | A      |
+| **Fullscreen** | Enter fullscreen mode       | F      |
 
 ### Theme Panel Controls
 
@@ -99,7 +99,7 @@ All keyboard shortcuts are available globally. Press any key below to control OR
 
 ---
 
-## 🎯 Workflow Examples
+## Workflow Examples
 
 ### Example 1: Change Theme
 
@@ -148,7 +148,7 @@ All keyboard shortcuts are available globally. Press any key below to control OR
 
 ---
 
-## 📱 Mobile/Touch Controls
+## Mobile/Touch Controls
 
 On mobile devices:
 
@@ -163,7 +163,7 @@ On mobile devices:
 
 ---
 
-## ♿ Accessibility Features
+## Accessibility Features
 
 ### Keyboard Navigation
 
@@ -191,7 +191,7 @@ On mobile devices:
 
 ---
 
-## 🎓 Keyboard Shortcut Cheat Sheet
+## Keyboard Shortcut Cheat Sheet
 
 ### Remember with Patterns:
 
@@ -211,7 +211,7 @@ On mobile devices:
 
 ---
 
-## 🔄 Default Shortcuts
+## Default Shortcuts
 
 These are the default keyboard bindings. Currently not customizable.
 
@@ -232,7 +232,7 @@ const shortcuts = {
 
 ---
 
-## 🎮 Advanced Controls
+## Advanced Controls
 
 ### Command Line Debug (Browser Console)
 
@@ -270,26 +270,22 @@ window.DEBUG = true;
 
 ---
 
-## 🚀 Pro Tips
+## Pro Tips
 
 1. **Fast Theme Switching**
-
    - Use 'Q' key to quickly cycle through themes
    - Much faster than clicking manually
 
 2. **Quick Timezone Check**
-
    - Press 'Z' once to see current timezone
    - Press 'Z' again to close
    - Takes 2 seconds!
 
 3. **Audio Control**
-
    - Press 'A' to mute all sounds at once
    - Then adjust volume in Settings if needed
 
 4. **Fullscreen Productivity**
-
    - Press 'F' for distraction-free fullscreen
    - Cursor auto-hides after 2 seconds
 
@@ -300,7 +296,7 @@ window.DEBUG = true;
 
 ---
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 ### Keyboard Shortcuts
 
@@ -318,7 +314,7 @@ window.DEBUG = true;
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Shortcuts Not Working
 
@@ -347,18 +343,7 @@ window.DEBUG = true;
 
 ---
 
-## 📞 Support
-
-For keyboard shortcut issues:
-
-1. Check this document
-2. Open browser console (F12)
-3. Check for error messages
-4. Report on GitHub
-
----
-
-## 🔐 Accessibility Notes
+## Accessibility
 
 - All controls work without mouse
 - Keyboard shortcuts are standard keys

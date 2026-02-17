@@ -6,7 +6,7 @@ ORIZON v3.2 uses a **modular component-based architecture**. Each component is s
 
 ---
 
-## 📦 Component List
+## Component List
 
 ### 1. **Clock Component** (`Clock.js` + `Clock.css`)
 
@@ -195,13 +195,13 @@ destroy();
 
 **Settings Available**:
 
-- 🔔 Hourly Chime (on/off)
-- 🔊 Tick Sound (on/off)
-- ⏱️ Show Seconds (on/off)
-- ✨ Smooth Transitions (on/off)
-- 🚶 Reduced Motion (on/off)
-- ⚡ Power Saver (on/off)
-- 🔊 Volume (0-100%)
+- Hourly Chime (on/off)
+- Tick Sound (on/off)
+- Show Seconds (on/off)
+- Smooth Transitions (on/off)
+- Reduced Motion (on/off)
+- Power Saver (on/off)
+- Volume (0-100%)
 
 ---
 
@@ -238,7 +238,7 @@ destroy();
 
 ---
 
-## 🔄 Component Lifecycle
+## Component Lifecycle
 
 All components follow this lifecycle:
 
@@ -258,7 +258,7 @@ All components follow this lifecycle:
 
 ---
 
-## 📡 Event Communication
+## Event Communication
 
 Components communicate through **EventEmitter**:
 
@@ -285,7 +285,7 @@ this.eventEmitter.on("eventName", (data) => {
 
 ---
 
-## 🎯 Integration Points
+## Integration Points
 
 ### How Components Work Together:
 
@@ -318,7 +318,7 @@ App.js (Main Controller)
 
 ---
 
-## 🛠️ Creating a New Component
+## Creating a New Component
 
 Template for new components:
 
@@ -360,7 +360,7 @@ class MyComponent {
 
 ---
 
-## 📊 Component Dependencies
+## Component Dependencies
 
 ```
 Clock              → TimeUtils
@@ -376,7 +376,7 @@ All communicate through **EventEmitter**.
 
 ---
 
-## ✅ Best Practices
+## Best Practices
 
 When developing components:
 
@@ -391,7 +391,7 @@ When developing components:
 
 ---
 
-## 🚀 Performance Tips
+## Performance Tips
 
 - Use requestAnimationFrame for animations
 - Cache frequently accessed elements
